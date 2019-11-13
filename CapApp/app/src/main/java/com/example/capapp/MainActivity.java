@@ -1,5 +1,8 @@
 package com.example.capapp;
 
+import android.bluetooth.BluetoothA2dp;
+import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -11,8 +14,14 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String EXTRA_MESSAGE = "com.example.capapp.MESSAGE";
+    BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//    if(bluetoothAdapter == null) {
+//        // device doesn't support bluetooth
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,4 +61,15 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    /** Called on button press **/
+    public void sendPosition(View view) {
+        Intent intent = new Intent(this, DisplayPositionActivity.class);
+        EditText editText = (EditText) findViewById(R.id.editText);
+        String position = editText.getText().toString();
+        intent.putExtra(EXTRA_MESSAGE, position);
+        startActivity(intent);
+    }
+
+
 }

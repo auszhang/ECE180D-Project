@@ -1096,6 +1096,10 @@
         "source": "C:\\Users\\Austin\\Documents\\GitHub\\ECE180D-Project\\CapApp\\app\\src\\main\\res\\mipmap-anydpi-v26\\ic_launcher.xml"
     },
     {
+        "merged": "C:\\Users\\Austin\\Documents\\GitHub\\ECE180D-Project\\CapApp\\app\\build\\intermediates\\res\\merged\\debug\\layout_activity_display_position.xml.flat",
+        "source": "C:\\Users\\Austin\\Documents\\GitHub\\ECE180D-Project\\CapApp\\app\\src\\main\\res\\layout\\activity_display_position.xml"
+    },
+    {
         "merged": "C:\\Users\\Austin\\Documents\\GitHub\\ECE180D-Project\\CapApp\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi_ic_launcher_round.png.flat",
         "source": "C:\\Users\\Austin\\Documents\\GitHub\\ECE180D-Project\\CapApp\\app\\src\\main\\res\\mipmap-mdpi\\ic_launcher_round.png"
     },
