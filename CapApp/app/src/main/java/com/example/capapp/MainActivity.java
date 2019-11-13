@@ -1,6 +1,5 @@
 package com.example.capapp;
 
-import android.bluetooth.BluetoothA2dp;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,10 +17,6 @@ import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.example.capapp.MESSAGE";
-    BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-//    if(bluetoothAdapter == null) {
-//        // device doesn't support bluetooth
-//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,15 +24,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
     }
 
     @Override
@@ -62,12 +48,18 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /** Called on button press **/
+    /** Called on 'send' button press **/
     public void sendPosition(View view) {
         Intent intent = new Intent(this, DisplayPositionActivity.class);
         EditText editText = (EditText) findViewById(R.id.editText);
         String position = editText.getText().toString();
         intent.putExtra(EXTRA_MESSAGE, position);
+        startActivity(intent);
+    }
+
+    /** Called on bluetooth button press **/
+    public void setupBluetooth(View view) {
+        Intent intent = new Intent(this, DisplayBluetoothSetup.class);
         startActivity(intent);
     }
 

@@ -25,7 +25,7 @@
 17-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:11:22-76
 18
 19    <application
-19-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:13:5-36:19
+19-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:13:5-50:19
 20        android:allowBackup="true"
 20-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:14:9-35
 21        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
@@ -43,39 +43,58 @@
 28        android:theme="@style/AppTheme" >
 28-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:19:9-40
 29        <activity
-29-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:20:9-25:20
-30            android:name="com.example.capapp.DisplayPositionActivity"
-30-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:20:19-58
-31            android:parentActivityName="com.example.capapp.MainActivity" >
-31-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:20:59-101
-32
-33            <!-- The meta-data tag is required if you support API level 15 and lower -->
-34            <meta-data
-34-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:22:13-24:49
-35                android:name="android.support.PARENT_ACTIVITY"
-35-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:23:17-63
-36                android:value=".MainActivity" />
-36-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:24:17-46
-37        </activity>
-38        <activity
-38-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:26:9-35:20
-39            android:name="com.example.capapp.MainActivity"
-39-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:27:13-41
-40            android:label="@string/app_name"
-40-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:28:13-45
-41            android:theme="@style/AppTheme.NoActionBar" >
-41-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:29:13-56
-42            <intent-filter>
-42-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:30:13-34:29
-43                <action android:name="android.intent.action.MAIN" />
-43-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:31:17-69
-43-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:31:25-66
-44
-45                <category android:name="android.intent.category.LAUNCHER" />
-45-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:33:17-77
-45-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:33:27-74
-46            </intent-filter>
-47        </activity>
-48    </application>
-49
-50</manifest>
+29-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:20:9-28:20
+30            android:name="com.example.capapp.DisplayBluetoothSetup"
+30-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:20:19-56
+31            android:label="Configure Bluetooth"
+31-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:22:13-48
+32            android:parentActivityName="com.example.capapp.MainActivity" >
+32-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:21:13-55
+33
+34            <!-- The meta-data tag is required if you support API level 15 and lower -->
+35            <meta-data
+35-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:24:13-27:19
+36                android:name="android.support.PARENT_ACTIVITY"
+36-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:25:17-63
+37                android:value=".MainActivity" />
+37-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:26:17-46
+38        </activity>
+39        <activity
+39-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:29:9-39:20
+40            android:name="com.example.capapp.DisplayPositionActivity"
+40-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:30:13-52
+41            android:label="Your Entered Position"
+41-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:32:13-50
+42            android:parentActivityName="com.example.capapp.MainActivity" >
+42-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:31:13-55
+43
+44            <!-- The meta-data tag is required if you support API level 15 and lower -->
+45            <meta-data
+45-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:24:13-27:19
+46                android:name="android.support.PARENT_ACTIVITY"
+46-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:25:17-63
+47                android:value=".MainActivity" />
+47-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:26:17-46
+48        </activity>
+49        <activity
+49-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:40:9-49:20
+50            android:name="com.example.capapp.MainActivity"
+50-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:41:13-41
+51            android:label="Home"
+51-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:42:13-33
+52            android:theme="@style/AppTheme.NoActionBar" >
+52-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:43:13-56
+53            <intent-filter>
+53-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:44:13-48:29
+54                <action android:name="android.intent.action.MAIN" />
+54-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:45:17-69
+54-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:45:25-66
+55
+56                <category android:name="android.intent.category.LAUNCHER" />
+56-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:47:17-77
+56-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:47:27-74
+57            </intent-filter>
+58        </activity>
+59    </application>
+60
+61</manifest>
