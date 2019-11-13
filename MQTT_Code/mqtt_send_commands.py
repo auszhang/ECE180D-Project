@@ -12,4 +12,4 @@ client1.on_publish = on_publish
 client1.connect(broker,port)
 ret = client1.publish("topic/serene", "sequence 1")
 """
-publish.single(MQTT_PATH, "1st sequence", hostname = MQTT_SERVER)
+publish.single(MQTT_PATH, "Mode 1", hostname = MQTT_SERVER)
