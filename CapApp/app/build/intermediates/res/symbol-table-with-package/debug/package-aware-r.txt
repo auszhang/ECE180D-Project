@@ -1061,6 +1061,7 @@ id blocking
 id bottom
 id button
 id button2
+id button4
 id buttonPanel
 id center
 id center_horizontal
@@ -1122,6 +1123,7 @@ id left
 id line1
 id line3
 id listMode
+id listView
 id list_item
 id masked
 id message
@@ -1203,6 +1205,7 @@ id textSpacerNoButtons
 id textSpacerNoTitle
 id textStart
 id textView
+id textView2
 id text_input_password_toggle
 id textinput_counter
 id textinput_error
