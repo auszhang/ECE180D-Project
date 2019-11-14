@@ -1,10 +1,13 @@
 import paho.mqtt.publish as publish
 import paho.mqtt.client as mqtt
 import time
+import * from server_helpers
 MQTT_SERVER = "192.168.43.130"
 #port = 1883
 send_path = "topic/serene"
 listen_path = "topic/init_loc"
+rec_client_strings = []
+MAX_CLIENTS = 1
 
 def on_publish(client,userdata,result):
 	print("LED sequence sent")
@@ -16,12 +19,14 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
     statement = msg.payload
-    print(msg.topic + chr(11) + str(statement))
+    rec_client_strings.append(statement)
+    print(msg.topic + " " + str(statement))
     time.sleep(5)
-    client.publish(send_path, "Mode 1")
-    #publish.single(send_path, "Mode 1", hostname = MQTT_SERVER)
-
-
+    if len(rec_client_strings) == MAX_CLIENTS:
+        client_data = parse_from_strings(rec_client_strings)
+        grid, _ = localize_all(client_data)
+        light_asgns = assign_lighting(grid)
+        client.publish(send_path, light_asgns)
 
 client = mqtt.Client()
 client.on_connect = on_connect
