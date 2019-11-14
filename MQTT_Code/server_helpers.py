@@ -35,7 +35,9 @@ def find_max_full_grid(grid):
   
     return max_i-max_of_s+1, max_i, max_j-max_of_s+1, max_j
 
-def assign_lighting(grid):
+def assign_lighting(grid, cycle):
+    if cycle%2 == 0:
+        return "Mode 2"
     return "Mode 1"
 
 # localize maps clients to their position in the display grid.
