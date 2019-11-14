@@ -13,43 +13,31 @@
 
 
     <Button
-        android:text="Turn On"
+        android:text="Bluetooth ON/OFF"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:id="@+id/button"
+        android:id="@+id/button_on_off"
         android:clickable="true"
-        android:onClick="on" />
+         />
 
     <Button
-        android:text="Enable Discoverable"
+        android:text="Discover"
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/button"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="visible" />
-
-    <Button
-        android:text="Turn off"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="off"
-        android:id="@+id/button4"
-        android:layout_below="@+id/button"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true" />
-
+        android:onClick="visible" />
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/listView"
         android:layout_alignParentBottom="true"
-        android:layout_alignLeft="@+id/button"
-        android:layout_alignStart="@+id/button"
+        android:layout_alignLeft="@+id/button_on_off"
+        android:layout_alignStart="@+id/button_on_off"
         android:layout_below="@+id/textView2" />
 
     <TextView
@@ -59,7 +47,7 @@
         android:id="@+id/textView2"
         android:textColor="#000000"
         android:textSize="25dp"
-        android:layout_below="@+id/button4"
+        android:layout_below="@+id/button2"
         android:layout_alignLeft="@+id/listView"
         android:layout_alignStart="@+id/listView" />
 

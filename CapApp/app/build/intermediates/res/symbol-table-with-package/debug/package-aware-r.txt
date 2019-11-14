@@ -1061,8 +1061,8 @@ id blocking
 id bottom
 id button
 id button2
-id button4
 id buttonPanel
+id button_on_off
 id center
 id center_horizontal
 id center_vertical
@@ -1223,6 +1223,8 @@ id transition_layout_save
 id transition_position
 id transition_scene_layoutid_cache
 id transition_transform
+id tvDeviceAddress
+id tvDeviceName
 id uniform
 id unlabeled
 id up
@@ -1297,6 +1299,7 @@ layout design_navigation_item_subheader
 layout design_navigation_menu
 layout design_navigation_menu_item
 layout design_text_input_password_icon
+layout device_adapter_view
 layout mtrl_layout_snackbar
 layout mtrl_layout_snackbar_include
 layout notification_action

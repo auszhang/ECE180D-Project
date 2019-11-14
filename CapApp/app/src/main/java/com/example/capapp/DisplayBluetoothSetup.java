@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -16,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class DisplayBluetoothSetup extends AppCompatActivity {
-    public static final int REQUEST_ENABLE_BT = 1;
+    private static final String TAG = "DisplayBluetoothSetup";
     Button b1,b2,b3,b4;
     private BluetoothAdapter BA;
     private Set<BluetoothDevice> pairedDevices;
@@ -30,32 +32,38 @@ public class DisplayBluetoothSetup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_bluetooth_setup);
 
-        b1 = (Button) findViewById(R.id.button);
+        Button button_on_off = (Button) findViewById((R.id.button_on_off));
         b2=(Button)findViewById(R.id.button2);
-//        b3=(Button)findViewById(R.id.button3);
-        b4=(Button)findViewById(R.id.button4);
 
         BA = BluetoothAdapter.getDefaultAdapter();
         lv = (ListView)findViewById(R.id.listView);
 
-
+        button_on_off.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: enabling/disabling bluetooth.");
+                enableDisableBT();
+            }
+        });
     }
 
-
-
-    public void on(View v){
-        if (!BA.isEnabled()) {
-            Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(turnOn, 0);
-            Toast.makeText(getApplicationContext(), "Turned on",Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(getApplicationContext(), "Already on", Toast.LENGTH_LONG).show();
+    public void enableDisableBT(){
+        if(BA == null){
+            Log.d(TAG, "enableDisableBT: Does not have BT capabilities.");
         }
-    }
+        if(!BA.isEnabled()){
+            Log.d(TAG, "enableDisableBT: enabling BT.");
+            Intent enableBTIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivity(enableBTIntent);
+            IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        }
+        if(BA.isEnabled()){
+            Log.d(TAG, "enableDisableBT: disabling BT.");
+            BA.disable();
+            Toast.makeText(getApplicationContext(), "Bluetooth has been disabled successfully." ,Toast.LENGTH_LONG).show();
+            IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        }
 
-    public void off(View v){
-        BA.disable();
-        Toast.makeText(getApplicationContext(), "Turned off" ,Toast.LENGTH_LONG).show();
     }
 
     public void visible(View v){

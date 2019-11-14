@@ -4706,8 +4706,8 @@ public final class R {
     public static final int bottom=0x7f080023;
     public static final int button=0x7f080024;
     public static final int button2=0x7f080025;
-    public static final int button4=0x7f080026;
-    public static final int buttonPanel=0x7f080027;
+    public static final int buttonPanel=0x7f080026;
+    public static final int button_on_off=0x7f080027;
     public static final int center=0x7f080028;
     public static final int center_horizontal=0x7f080029;
     public static final int center_vertical=0x7f08002a;
@@ -4868,15 +4868,17 @@ public final class R {
     public static final int transition_position=0x7f0800c5;
     public static final int transition_scene_layoutid_cache=0x7f0800c6;
     public static final int transition_transform=0x7f0800c7;
-    public static final int uniform=0x7f0800c8;
-    public static final int unlabeled=0x7f0800c9;
-    public static final int up=0x7f0800ca;
-    public static final int useLogo=0x7f0800cb;
-    public static final int view_offset_helper=0x7f0800cc;
-    public static final int visible=0x7f0800cd;
-    public static final int withText=0x7f0800ce;
-    public static final int wrap=0x7f0800cf;
-    public static final int wrap_content=0x7f0800d0;
+    public static final int tvDeviceAddress=0x7f0800c8;
+    public static final int tvDeviceName=0x7f0800c9;
+    public static final int uniform=0x7f0800ca;
+    public static final int unlabeled=0x7f0800cb;
+    public static final int up=0x7f0800cc;
+    public static final int useLogo=0x7f0800cd;
+    public static final int view_offset_helper=0x7f0800ce;
+    public static final int visible=0x7f0800cf;
+    public static final int withText=0x7f0800d0;
+    public static final int wrap=0x7f0800d1;
+    public static final int wrap_content=0x7f0800d2;
   }
   public static final class integer {
     public static final int abc_config_activityDefaultDur=0x7f090000;
@@ -4948,18 +4950,19 @@ public final class R {
     public static final int design_navigation_menu=0x7f0b002b;
     public static final int design_navigation_menu_item=0x7f0b002c;
     public static final int design_text_input_password_icon=0x7f0b002d;
-    public static final int mtrl_layout_snackbar=0x7f0b002e;
-    public static final int mtrl_layout_snackbar_include=0x7f0b002f;
-    public static final int notification_action=0x7f0b0030;
-    public static final int notification_action_tombstone=0x7f0b0031;
-    public static final int notification_template_custom_big=0x7f0b0032;
-    public static final int notification_template_icon_group=0x7f0b0033;
-    public static final int notification_template_part_chronometer=0x7f0b0034;
-    public static final int notification_template_part_time=0x7f0b0035;
-    public static final int select_dialog_item_material=0x7f0b0036;
-    public static final int select_dialog_multichoice_material=0x7f0b0037;
-    public static final int select_dialog_singlechoice_material=0x7f0b0038;
-    public static final int support_simple_spinner_dropdown_item=0x7f0b0039;
+    public static final int device_adapter_view=0x7f0b002e;
+    public static final int mtrl_layout_snackbar=0x7f0b002f;
+    public static final int mtrl_layout_snackbar_include=0x7f0b0030;
+    public static final int notification_action=0x7f0b0031;
+    public static final int notification_action_tombstone=0x7f0b0032;
+    public static final int notification_template_custom_big=0x7f0b0033;
+    public static final int notification_template_icon_group=0x7f0b0034;
+    public static final int notification_template_part_chronometer=0x7f0b0035;
+    public static final int notification_template_part_time=0x7f0b0036;
+    public static final int select_dialog_item_material=0x7f0b0037;
+    public static final int select_dialog_multichoice_material=0x7f0b0038;
+    public static final int select_dialog_singlechoice_material=0x7f0b0039;
+    public static final int support_simple_spinner_dropdown_item=0x7f0b003a;
   }
   public static final class menu {
     public static final int menu_main=0x7f0c0000;
