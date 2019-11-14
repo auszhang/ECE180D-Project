@@ -20,6 +20,7 @@ public class DisplayBluetoothSetup extends AppCompatActivity {
     Button b1,b2,b3,b4;
     private BluetoothAdapter BA;
     private Set<BluetoothDevice> pairedDevices;
+    private DeviceListAdapter mDeviceAdapter;
     ListView lv;
 
 
@@ -37,7 +38,10 @@ public class DisplayBluetoothSetup extends AppCompatActivity {
         BA = BluetoothAdapter.getDefaultAdapter();
         lv = (ListView)findViewById(R.id.listView);
 
+
     }
+
+
 
     public void on(View v){
         if (!BA.isEnabled()) {
