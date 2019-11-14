@@ -24,12 +24,12 @@
 
     <Button
         android:text="Discover"
-        android:id="@+id/button2"
+        android:id="@+id/discover_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:onClick="visible" />
+        android:onClick="findDevices" />
 
     <ListView
         android:layout_width="wrap_content"
@@ -43,11 +43,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Paired devices:"
+        android:text="Available devices:"
         android:id="@+id/textView2"
         android:textColor="#000000"
         android:textSize="25dp"
-        android:layout_below="@+id/button2"
+        android:layout_below="@+id/button_on_off"
         android:layout_alignLeft="@+id/listView"
         android:layout_alignStart="@+id/listView" />
 
