@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -22,7 +23,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class DisplayBluetoothSetup extends AppCompatActivity {
+public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private static final String TAG = "DisplayBluetoothSetup";
     private BluetoothAdapter BA;
     private ArrayList<BluetoothDevice> deviceArrayList = new ArrayList<>();
@@ -43,6 +44,12 @@ public class DisplayBluetoothSetup extends AppCompatActivity {
         BA = BluetoothAdapter.getDefaultAdapter();
 
         deviceArrayList = new ArrayList<>();
+
+        // Broadcasts when pairing (band state change)
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        registerReceiver(mBroadcastReceiver2, filter);
+
+        lv.setOnItemClickListener(DisplayBluetoothSetup.this);
 
         button_on_off.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +119,7 @@ public class DisplayBluetoothSetup extends AppCompatActivity {
         }
     }
 
-    // Create a BroadcastReceiver for ACTION_FOUND
+    /** Create a BroadcastReceiver for ACTION_FOUND **/
     private final BroadcastReceiver mBroadcastReceiver1 = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -138,6 +145,34 @@ public class DisplayBluetoothSetup extends AppCompatActivity {
         }
     };
 
+    private final BroadcastReceiver mBroadcastReceiver2 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if(action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
+                BluetoothDevice mDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                // case 1: detected device is already bonded
+                if (mDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
+                    Log.d(TAG, "BroadcastReceiver: BOND_BONDED. ");
+                    Log.d(TAG, "BroadCastReceiver: ############### Bonded with " + mDevice.getName() + "@" + mDevice.getAddress());
+                    Toast.makeText(getApplicationContext(), "Successfully paired with " + mDevice.getName(),Toast.LENGTH_SHORT).show();
+                }
+
+                // case 2: detected device is currently bonding
+                if (mDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
+                    Log.d(TAG, "BroadcastReceiver: BOND_BONDING. ");
+                }
+                // case 3: detected device is breaking a bond
+                if (mDevice.getBondState() == BluetoothDevice.BOND_NONE) {
+                    Log.d(TAG, "BroadcastReceiver: BOND_NONE. ");
+                }
+            }
+        }
+    };
+
+
     /**
      * Broadcast Receiver for listing devices that are not yet paired
      * -Executed by btnDiscover() method.
@@ -157,6 +192,35 @@ public class DisplayBluetoothSetup extends AppCompatActivity {
             }
         }
     };
+
+
+    /** Handles clicking on a discovered device **/
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        // cancel discovery since it's memory intensive
+        BA.cancelDiscovery();
+        Log.d(TAG, "onItemClick: You clicked on a device. ");
+        String deviceName = deviceArrayList.get(position).getName();
+        String deviceAddress = deviceArrayList.get(position).getAddress();
+        Log.d(TAG, "onItemClick: deviceName =  " + deviceName);
+        Log.d(TAG, "onItemClick: deviceAddress =  " + deviceAddress);
+
+        // create bond, requires API 17+ (Jelly Bean MR2)
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            Log.d(TAG, "Trying to pair with " + deviceName);
+            deviceArrayList.get(position).createBond();
+        }
+
+    }
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy: called.");
+        super.onDestroy();
+        unregisterReceiver(mBroadcastReceiver1);
+        unregisterReceiver(mBroadcastReceiver2);
+        unregisterReceiver(mBroadcastReceiver3);
+
+    }
 
 
 //    public void visible(View v){
