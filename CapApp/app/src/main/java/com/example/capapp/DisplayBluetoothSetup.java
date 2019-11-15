@@ -14,14 +14,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Set;
 
 public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private static final String TAG = "DisplayBluetoothSetup";
@@ -60,6 +56,7 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
         });
     }
 
+    /** Toggles Bluetooth, called by the Bluetooth ON/OFF button **/
     public void enableDisableBT(){
         if(BA == null){
             Log.d(TAG, "enableDisableBT: Does not have BT capabilities.");
@@ -81,6 +78,7 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
 
     }
 
+    /** Finds unpaired devices, called by Discover button **/
     public void findDevices(View view) {
         Log.d(TAG, "btnDiscover: Looking for unpaired devices.");
 
@@ -106,7 +104,7 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
         }
     }
 
-
+    /** Checks Bluetooth permissions for API version 17+ (Lollipop?) **/
     private void checkBTPermissions() {
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
             int permissionCheck = 0;
@@ -145,6 +143,8 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
         }
 
     }
+
+    /** Destructor to clear memory intensive receivers**/
     @Override
     protected void onDestroy() {
         Log.d(TAG, "onDestroy: called.");
@@ -159,7 +159,7 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
      ** BROADCAST RECEIVERS BELOW
      **/
 
-    /** BroadcastReceiver for ACTION_FOUND -- each time an unpaired device is "discovered" **/
+    /** 1.) BroadcastReceiver for ACTION_FOUND -- each time an unpaired device is "discovered" **/
     private final BroadcastReceiver mBroadcastReceiver1 = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -185,8 +185,7 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
         }
     };
 
-    /** BroadcastReceiver for selecting devices from the list **/
-
+    /** 2.) BroadcastReceiver for selecting devices from the list **/
     private final BroadcastReceiver mBroadcastReceiver2 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -215,7 +214,7 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
     };
 
 
-    /** Broadcast Receiver for listing devices that are not yet paired - Executed by btnDiscover() method. **/
+    /** 3.) Broadcast Receiver for listing devices that are not yet paired - Executed by btnDiscover() method. **/
     private BroadcastReceiver mBroadcastReceiver3 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
