@@ -34,7 +34,10 @@ def on_message(client, userdata, msg):
 				print("other")
 				LED.blink_color(pixels, blink_times = 3,color= (0, 0, 100))
 
-publish.single(send_path, "1;1;Myself;None;12345", hostname = MQTT_SERVER)
+my_name = raw_input("Enter your first and last name: ")
+my_id = str(hash(my_name))
+print("Your id is: " + my_id)
+publish.single(send_path, "1;1;Myself;None;" + my_id, hostname = MQTT_SERVER)
 
 
 client = mqtt.Client()
