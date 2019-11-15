@@ -1,4 +1,21 @@
 #!/usr/bin/python
+#
+#    This program  reads the angles from the acceleromter, gyrscope
+#    and mangnetometeron a BerryIMU connected to a Raspberry Pi.
+#
+#    This program includes two filters (low pass and mdeian) to improve the 
+#    values returned from BerryIMU by reducing noise.
+#
+#
+#    http://ozzmaker.com/
+#    Both the BerryIMUv1 and BerryIMUv2 are supported
+#
+#    BerryIMUv1 uses LSM9DS0 IMU
+#    BerryIMUv2 uses LSM9DS1 IMU
+#
+
+
+
 
 import sys
 import time
@@ -7,7 +24,8 @@ import IMU
 import datetime
 import os
 # If the IMU is upside down (Skull logo facing up), change this value to 1
-IMU_UPSIDE_DOWN = 1	
+IMU_UPSIDE_DOWN = 0	
+
 
 RAD_TO_DEG = 57.29578
 M_PI = 3.14159265358979323846
@@ -18,21 +36,32 @@ ACC_LPF_FACTOR = 0.4 	# Low pass filter constant for accelerometer
 ACC_MEDIANTABLESIZE = 9    	# Median filter table size for accelerometer. Higher = smoother but a longer delay
 MAG_MEDIANTABLESIZE = 9    	# Median filter table size for magnetometer. Higher = smoother but a longer delay
 
+
+
 ################# Compass Calibration values ############
 # Use calibrateBerryIMU.py to get calibration values 
 # Calibrating the compass isnt mandatory, however a calibrated 
 # compass will result in a more accurate heading value.
 
-magXmin = 2254
-magYmin =  -1878
-magZmin =  973
-magXmax = 2282
-magYmax =  -1848
-magZmax =  1052
+magXmin =  0
+magYmin =  0
+magZmin =  0
+magXmax =  0
+magYmax =  0
+magZmax =  0
 
-compcallx = (magXmin + magXmax) /2
-compcally = (magYmin + magYmax) /2 
-compcallz = (magZmin + magZmax) /2 
+
+'''
+Here is an example:
+magXmin =  -1748
+magYmin =  -1025
+magZmin =  -1876
+magXmax =  959
+magYmax =  1651
+magZmax =  708
+Dont use the above values, these are just an example.
+'''
+
 
 
 #Kalman filter variables
@@ -125,6 +154,7 @@ def kalmanFilterX ( accAngle, gyroRate, DT):
 	
 	return KFangleX
 
+
 gyroXangle = 0.0
 gyroYangle = 0.0
 gyroZangle = 0.0
@@ -143,7 +173,9 @@ oldZAccRawValue = 0
 
 a = datetime.datetime.now()
 
-#Setup the tables for the median filter. Fill them all with '1' so we dont get devide by zero error 
+
+
+#Setup the tables for the mdeian filter. Fill them all with '1' so we dont get devide by zero error 
 acc_medianTable1X = [1] * ACC_MEDIANTABLESIZE
 acc_medianTable1Y = [1] * ACC_MEDIANTABLESIZE
 acc_medianTable1Z = [1] * ACC_MEDIANTABLESIZE
@@ -160,6 +192,7 @@ mag_medianTable2Z = [1] * MAG_MEDIANTABLESIZE
 IMU.detectIMU()     #Detect if BerryIMUv1 or BerryIMUv2 is connected.
 IMU.initIMU()       #Initialise the accelerometer, gyroscope and compass
 
+
 while True:
 
     #Read the accelerometer,gyroscope and magnetometer values
@@ -173,13 +206,12 @@ while True:
     MAGy = IMU.readMAGy()
     MAGz = IMU.readMAGz()
 
+
     #Apply compass calibration    
-    MAGx -= compcallx
-    MAGy -= compcally 
-    MAGz -= compcallz 
-    print compcallx
-    print compcally
-    print compcallz 
+    MAGx -= (magXmin + magXmax) /2 
+    MAGy -= (magYmin + magYmax) /2 
+    MAGz -= (magZmin + magZmax) /2 
+ 
 
     ##Calculate loop Period(LP). How long between Gyro Reads
     b = datetime.datetime.now() - a
