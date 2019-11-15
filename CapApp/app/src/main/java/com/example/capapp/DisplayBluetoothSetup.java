@@ -14,14 +14,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Set;
 
 public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private static final String TAG = "DisplayBluetoothSetup";
@@ -60,6 +56,7 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
         });
     }
 
+    /** Toggles Bluetooth, called by the Bluetooth ON/OFF button **/
     public void enableDisableBT(){
         if(BA == null){
             Log.d(TAG, "enableDisableBT: Does not have BT capabilities.");
@@ -81,6 +78,7 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
 
     }
 
+    /** Finds unpaired devices, called by Discover button **/
     public void findDevices(View view) {
         Log.d(TAG, "btnDiscover: Looking for unpaired devices.");
 
@@ -106,20 +104,62 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
         }
     }
 
+    /** Checks Bluetooth permissions for API version 17+ (Lollipop?) **/
     private void checkBTPermissions() {
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
-            int permissionCheck = this.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
-            permissionCheck += this.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
+            int permissionCheck = 0;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                permissionCheck = this.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                permissionCheck += this.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
+            }
             if (permissionCheck != 0) {
 
-                this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1001); //Any number
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1001); //Any number
+                }
             }
         }else{
             Log.d(TAG, "checkBTPermissions: No need to check permissions. SDK version < LOLLIPOP.");
         }
     }
 
-    /** Create a BroadcastReceiver for ACTION_FOUND **/
+    /** Handles clicking on a discovered device **/
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        // cancel discovery since it's memory intensive
+        BA.cancelDiscovery();
+        Log.d(TAG, "onItemClick: You clicked on a device. ");
+        String deviceName = deviceArrayList.get(position).getName();
+        String deviceAddress = deviceArrayList.get(position).getAddress();
+        Log.d(TAG, "onItemClick: deviceName =  " + deviceName);
+        Log.d(TAG, "onItemClick: deviceAddress =  " + deviceAddress);
+
+        // create bond, requires API 17+ (Jelly Bean MR2)
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            Log.d(TAG, "Trying to pair with " + deviceName);
+            deviceArrayList.get(position).createBond();
+        }
+
+    }
+
+    /** Destructor to clear memory intensive receivers**/
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy: called.");
+        super.onDestroy();
+        unregisterReceiver(mBroadcastReceiver1);
+        unregisterReceiver(mBroadcastReceiver2);
+        unregisterReceiver(mBroadcastReceiver3);
+
+    }
+
+    /**
+     ** BROADCAST RECEIVERS BELOW
+     **/
+
+    /** 1.) BroadcastReceiver for ACTION_FOUND -- each time an unpaired device is "discovered" **/
     private final BroadcastReceiver mBroadcastReceiver1 = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -145,6 +185,7 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
         }
     };
 
+    /** 2.) BroadcastReceiver for selecting devices from the list **/
     private final BroadcastReceiver mBroadcastReceiver2 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -173,10 +214,7 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
     };
 
 
-    /**
-     * Broadcast Receiver for listing devices that are not yet paired
-     * -Executed by btnDiscover() method.
-     */
+    /** 3.) Broadcast Receiver for listing devices that are not yet paired - Executed by btnDiscover() method. **/
     private BroadcastReceiver mBroadcastReceiver3 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -192,35 +230,6 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
             }
         }
     };
-
-
-    /** Handles clicking on a discovered device **/
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // cancel discovery since it's memory intensive
-        BA.cancelDiscovery();
-        Log.d(TAG, "onItemClick: You clicked on a device. ");
-        String deviceName = deviceArrayList.get(position).getName();
-        String deviceAddress = deviceArrayList.get(position).getAddress();
-        Log.d(TAG, "onItemClick: deviceName =  " + deviceName);
-        Log.d(TAG, "onItemClick: deviceAddress =  " + deviceAddress);
-
-        // create bond, requires API 17+ (Jelly Bean MR2)
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            Log.d(TAG, "Trying to pair with " + deviceName);
-            deviceArrayList.get(position).createBond();
-        }
-
-    }
-    @Override
-    protected void onDestroy() {
-        Log.d(TAG, "onDestroy: called.");
-        super.onDestroy();
-        unregisterReceiver(mBroadcastReceiver1);
-        unregisterReceiver(mBroadcastReceiver2);
-        unregisterReceiver(mBroadcastReceiver3);
-
-    }
 
 
 //    public void visible(View v){
