@@ -7,7 +7,7 @@ MQTT_SERVER = "192.168.43.130"
 send_path = "topic/serene"
 listen_path = "topic/init_loc"
 rec_client_strings = []
-MAX_CLIENTS = 2
+MAX_CLIENTS = 1
 cycle = 0
 
 def on_publish(client,userdata,result):
@@ -33,7 +33,7 @@ client.connect(MQTT_SERVER, 1883, 60)
 client.loop_start()
 while True:
     time.sleep(5)
-    if len(rec_client_strings) == MAX_CLIENTS:
+    if len(rec_client_strings) >= MAX_CLIENTS:
         client_data = parse_from_strings(rec_client_strings)
         grid, _ = localize_all(client_data)
         light_asgns = assign_lighting(grid, cycle)

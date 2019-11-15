@@ -30,6 +30,7 @@ def on_message(client, userdata, msg):
 			if (str(statement) == "Mode 1"):
     				print("Mode 1")
 				LED.blink_color(pixels, blink_times = 3, color=(100, 0, 0))
+				
 			else:
 				print("other")
 				LED.blink_color(pixels, blink_times = 3,color= (0, 0, 100))
