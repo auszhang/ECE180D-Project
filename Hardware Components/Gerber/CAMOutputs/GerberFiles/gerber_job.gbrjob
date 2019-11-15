@@ -1,0 +1,24 @@
+{
+    "Header": {
+        "Comment": "All values are metric (mm)",
+        "CreationDate": "2019-11-02T08:29:45Z",
+        "GenerationSoftware": {
+            "Application": "EAGLE",
+            "Vendor": "Autodesk",
+            "Version": "9.2.2"
+        },
+        "Part": "Single"
+    },
+    "Overall": {
+        "BoardThickness": 1.671119,
+        "LayerNumber": 2,
+        "Name": {
+            "ProjectId": "ECE180DA"
+        },
+        "Owner": "Kenny Chan <kennych418@ucla.edu>",
+        "Size": {
+            "X": 12.7,
+            "Y": 53.34
+        }
+    }
+}

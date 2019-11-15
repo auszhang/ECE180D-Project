@@ -37,7 +37,7 @@ def on_message(client, userdata, msg):
 my_name = raw_input("Enter your first and last name: ")
 my_id = str(hash(my_name))
 print("Your id is: " + my_id)
-publish.single(send_path, "1;1;Myself;None;" + my_id, hostname = MQTT_SERVER)
+publish.single(send_path, "1;1;"+my_name+";None;"+my_id, hostname = MQTT_SERVER)
 
 
 client = mqtt.Client()
