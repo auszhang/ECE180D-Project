@@ -64,6 +64,8 @@ public class DisplayPositionActivity extends AppCompatActivity {
             }
             serverSocket = tmp;
         }
+
+        /** Runs threads from AcceptThread**/
         public void run() {
             Log.d(TAG, "run: AcceptThread running");
             BluetoothSocket socket = null;
