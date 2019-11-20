@@ -9,11 +9,16 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
+import android.icu.util.Output;
 import android.os.Bundle;
+import android.renderscript.ScriptGroup;
 import android.util.Log;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.UUID;
 
 public class DisplayPositionActivity extends AppCompatActivity {
@@ -29,6 +34,7 @@ public class DisplayPositionActivity extends AppCompatActivity {
     private BluetoothDevice mDevice;
     private UUID deviceUUID;
     ProgressDialog mProgressDialog;
+    private ConnectedThread mConnectedThread;
 
 
     /** Constructor**/
@@ -148,7 +154,7 @@ public class DisplayPositionActivity extends AppCompatActivity {
                 }
                 Log.d(TAG, "ConnectThread.run: Could not connect to UUID. ");
             }
-            //connected(mSocket, mDevice);
+            connected(mSocket, mDevice);
         }
 
         /** Cancels the connection. **/
@@ -192,6 +198,84 @@ public class DisplayPositionActivity extends AppCompatActivity {
 
     }
 
+    /** Manages a successful thread connection**/
+    private class ConnectedThread extends Thread {
+        private final BluetoothSocket mSocket;
+        private final InputStream mInStream;
+        private final OutputStream mOutStream;
+
+        public ConnectedThread(BluetoothSocket socket) {
+            Log.d(TAG, "ConnectedThread: Starting.");
+            mSocket = socket;
+            InputStream tmpIn = null;
+            OutputStream tmpOut = null;
+
+            // dismiss process dialog box since connection is successful
+            mProgressDialog.dismiss();
+
+            // get inputs and outputs from in/out stream
+            try {
+                tmpIn = mSocket.getInputStream();
+                tmpOut = mSocket.getOutputStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            mInStream = tmpIn;
+            mOutStream = tmpOut;
+        }
+
+        public void run() {
+            // get input from input stream
+            byte[] buffer = new byte[1024];
+            int bytes;
+
+            // listens to the input stream until exception occurs
+            while(true) {
+                try {
+                    bytes = mInStream.read(buffer);
+                    // incoming message as a string
+                    String message = new String(buffer, 0, bytes);
+                    Log.d(TAG, "InputStream: " + message);
+                } catch (IOException e) {
+                    Log.e(TAG, "OutputStream: Error reading from InputStream. " + e.getMessage());
+                    break;
+                }
+            }
+        }
+        /** Call from main activity to send data to Pi**/
+        public void write(byte[] bytes) {
+            // string to send to OutputStream
+            String text = new String(bytes, Charset.defaultCharset());
+            Log.d(TAG, "OutputStream: " + text);
+            try {
+                mOutStream.write(bytes);
+            } catch (IOException e) {
+                Log.e(TAG, "OutputStream: Error writing to output stream. " + e.getMessage());
+            }
+        }
 
 
+        /** Call from main activity to shut down the connection **/
+        public void cancel() {
+            try {
+                mSocket.close();
+            } catch (IOException e) { }
+        }
+    }
+
+    /** Manage connection, perform output stream transmissions, grab input stream transmissions **/
+    private void connected(BluetoothSocket mSocket, BluetoothDevice mDevice) {
+        Log.d(TAG, "connected(): Starting.");
+
+        // start thread
+        mConnectedThread = new ConnectedThread(mSocket);
+        mConnectedThread.start();
+    }
+
+    /** Write to ConnectedThread unsynchronized. **/
+    public void write(byte[] out) {
+        // synchronize copy of the ConnectedThread and write it out
+        Log.d(TAG, "write: Outer write method called");
+        mConnectedThread.write(out);
+    }
 }
