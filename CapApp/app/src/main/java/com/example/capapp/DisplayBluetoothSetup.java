@@ -17,6 +17,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -149,9 +151,14 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
     protected void onDestroy() {
         Log.d(TAG, "onDestroy: called.");
         super.onDestroy();
-        unregisterReceiver(mBroadcastReceiver1);
-        unregisterReceiver(mBroadcastReceiver2);
-        unregisterReceiver(mBroadcastReceiver3);
+        try{
+            unregisterReceiver(mBroadcastReceiver1);
+            unregisterReceiver(mBroadcastReceiver2);
+            unregisterReceiver(mBroadcastReceiver3);
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "onDestroy: unable to unregister receiver. " + e.getMessage());
+        }
+
 
     }
 

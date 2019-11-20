@@ -1060,6 +1060,7 @@ id beginning
 id blocking
 id bottom
 id button
+id button2
 id buttonPanel
 id button_on_off
 id center
