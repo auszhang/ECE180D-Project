@@ -148,7 +148,7 @@ public class DisplayPositionActivity extends AppCompatActivity {
                 }
                 Log.d(TAG, "ConnectThread.run: Could not connect to UUID. ");
             }
-            connected(mSocket, mDevice);
+            //connected(mSocket, mDevice);
         }
 
         /** Cancels the connection. **/
@@ -164,7 +164,7 @@ public class DisplayPositionActivity extends AppCompatActivity {
 
     /** Starts the connection service: Initiates the AcceptThread to begin a session in server mode. Called by the Activity onResume() **/
     public synchronized void start() {
-        Log.d(TAG, "Start.");
+        Log.d(TAG, "Server started.");
 
         // if a ConnectThread exists, cancel it and create a new one, cancels any thread trying to make a connection
         if (mConnectThread == null) {
@@ -180,7 +180,18 @@ public class DisplayPositionActivity extends AppCompatActivity {
     }
 
     /** Initiates the ConnectThread. AcceptThread waits for a connection. ConnectThread starts and attempts to make a connection with AcceptThread**/
-    
+    public void startClient(BluetoothDevice device, UUID uuid) {
+        Log.d(TAG, "Client started.");
+
+        // Create process dialog box
+        mProgressDialog = ProgressDialog.show(mContext, "Connecting Bluetooth"
+                , "Please wait...", true);
+
+        mConnectThread = new ConnectThread(device, uuid);
+        mConnectThread.start();
+
+    }
+
 
 
 }
