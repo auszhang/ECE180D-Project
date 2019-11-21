@@ -141,9 +141,24 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
         // create bond, requires API 17+ (Jelly Bean MR2)
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
             Log.d(TAG, "Trying to pair with " + deviceName);
+            Toast.makeText(getApplicationContext(), "Trying to pair with " + deviceName,Toast.LENGTH_SHORT).show();
             deviceArrayList.get(position).createBond();
         }
 
+    }
+
+    @Override
+    protected void onPause(){
+        Log.d(TAG, "onDestroy: called.");
+        super.onPause();
+        try{
+            unregisterReceiver(mBroadcastReceiver1);
+            unregisterReceiver(mBroadcastReceiver2);
+            unregisterReceiver(mBroadcastReceiver3);
+
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "onPause: unable to unregister receiver. " + e.getMessage());
+        }
     }
 
     /** Destructor to clear memory intensive receivers**/
@@ -155,6 +170,7 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
             unregisterReceiver(mBroadcastReceiver1);
             unregisterReceiver(mBroadcastReceiver2);
             unregisterReceiver(mBroadcastReceiver3);
+
         } catch (IllegalArgumentException e) {
             Log.e(TAG, "onDestroy: unable to unregister receiver. " + e.getMessage());
         }
