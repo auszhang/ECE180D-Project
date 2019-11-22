@@ -1,0 +1,17 @@
+sudo apt-get update
+sudo apt-get install python-dev
+sudo apt-get install bluez python-bluez
+Add the following to the end of /etc/bluetooth/main.conf
+DisablePlugins = pnat
+
+sudo apt-get install bluetooth libbluetooth-dev
+python2 -m pip install pybluez #or python3
+
+    Running bluetooth in compatibility mode,
+    by modifying /etc/systemd/system/dbus-org.bluez.service,
+    changing
+    ExecStart=/usr/lib/bluetooth/bluetoothd
+    into
+    ExecStart=/usr/lib/bluetooth/bluetoothd -C
+    Then adding the Serial Port Profile, executing: sudo sdptool add SP
+    REBOOT
