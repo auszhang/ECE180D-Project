@@ -1,11 +1,31 @@
+# Bluetooth imports
+import os
+import glob
+import time
+from bluetooth import *
+# MQTT imports
 import paho.mqtt.publish as publish
 import paho.mqtt.client as mqtt
 #imports for LED command modules
-import time
 import RPi.GPIO as GPIO 
 import Adafruit_WS2801
 import Adafruit_GPIO.SPI as SPI
 import LED_ex as LED
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(17, GPIO.OUT)
+base_dir = '/sys/bus/w1/devices/'
+
+server_sock=BluetoothSocket( RFCOMM )
+server_sock.bind(("",PORT_ANY))
+server_sock.listen(1)
+port = server_sock.getsockname()[1]
+uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
+advertise_service( server_sock, "AquaPiServer",
+                   service_id = uuid,
+                   service_classes = [ uuid, SERIAL_PORT_CLASS ],
+                   profiles = [ SERIAL_PORT_PROFILE ], 
+                    )
 
 MQTT_SERVER = "192.168.43.130" #for Litty
 #MQTT_SERVER = "192.168.0.135" #for Naruto
@@ -35,16 +55,44 @@ def on_message(client, userdata, msg):
 				print("other")
 				LED.blink_color(pixels, blink_times = 3,color= (0, 0, 100))
 
-my_name = raw_input("Enter your first and last name: ")
-my_id = str(hash(my_name))
-print("Your id is: " + my_id)
-publish.single(send_path, "1;1;"+my_name+";None;"+my_id, hostname = MQTT_SERVER)
-
-
+# Initialize MQTT client.
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 client.connect(MQTT_SERVER, 1883, 60)
-#publish.single(send_path, "Testing", hostname = MQTT_SERVER)
+# Start MQTT client in separate thread.
+client.loop_start()
 
-client.loop_forever()
+while True:
+	print("Waiting for connection on RFCOMM channel %d")% port
+
+	client_sock, client_info = server_sock.accept()
+	print("Accepted connection from ", client_info)
+
+	try:
+		data = client_sock.recv(1024)
+		if len(data) == 0:
+			break
+		print("received [%s]") % data
+		data_array = data.split(";")
+		if len(data_array) == 3:
+			my_name = data_array[0]
+			my_id = str(hash(my_name))
+			my_row = data_array[1]
+			my_col = data_array[2]
+			send_data = ";"
+			send_data = send_data.join([my_name, my_id, my_row, my_col])
+			publish.single(send_path, send_data, hostname = MQTT_SERVER)
+
+	except IOError:
+		pass
+
+	except KeyboardInterrupt:
+
+		print("disconnected")
+
+		client_sock.close()
+		server_sock.close()
+		print("all done")
+
+		break
