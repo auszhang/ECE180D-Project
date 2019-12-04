@@ -24,6 +24,14 @@ def on_message(client, userdata, msg):
     print(msg.topic + " " + str(statement))
     time.sleep(2)
 
+def tell_lighting(client_id, lighting): 
+    #currently not accounting for color assignments
+    #msg = str(lighting[2][1]) + str(lighting[2][0]) + str(lighting[1][0]) + str(lighting[0][0]) + str(lighting[0][1])+str(lighting[0][2])+str(lighting[1][2])+str(lighting[2][2])
+    msg = str(lighting[2][1]) + str(lighting[2][2]) + str(lighting[1][2])\
+    + str(lighting[0][2]) + str(lighting[0][1])+str(lighting[0][0])\
+    + str(lighting[1][0]) +str(lighting[2][0])
+    return msg
+
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
@@ -34,8 +42,14 @@ client.loop_start()
 while True:
     time.sleep(5)
     if len(rec_client_strings) >= MAX_CLIENTS:
-        client_data = parse_from_strings(rec_client_strings)
-        grid, _ = localize_all(client_data)
-        light_asgns = assign_lighting(grid, cycle)
+        # client_data = parse_from_strings(rec_client_strings)
+        # grid, _ = localize_all(client_data)
+        # light_asgns = assign_lighting(grid, cycle)
+
+        client_id = 2
+        lighting = [[0,1,1], [0,0,0], [1,1,0]]
+        light_asgns = tell_lighting(client_id,lighting) #for Serene's testing
+        print(light_asgns)
         client.publish(send_path, light_asgns)
+        # client.publish(send_path, "010101")
         cycle += 1

@@ -53,7 +53,8 @@ def on_message(client, userdata, msg):
 				
 			else:
 				print("other")
-				LED.blink_color(pixels, blink_times = 3,color= (0, 0, 100))
+				LED.enact_lights_basic(pixels, str(statement)) #line added by Serene
+				# LED.blink_color(pixels, blink_times = 3,color= (0, 0, 100))
 
 # Initialize MQTT client.
 client = mqtt.Client()
