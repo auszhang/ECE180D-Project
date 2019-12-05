@@ -30,11 +30,16 @@ def one_at_a_time(pixels, wait=0.9,color=(255,0,0)):
 def enact_lights_basic(pixels, data, my_id):
     pixels.clear()
     print(data)
-    light_msgs = data.split(" ")
+    light_msgs = data.split("#")
+    print(my_id)
     for msg in light_msgs:
-        client_id = msg[:-8]
+        #client_id = msg[:-9]
+        stuff = msg.split(".")
+        client_id = stuff[0]
+        print(client_id)
         if client_id == my_id:
             light_msg = msg[-8:]
+            print(light_msg)
             for j in range(len(light_msg)):
                 #print(int(j))
                 c1=int(light_msg[j])*50;

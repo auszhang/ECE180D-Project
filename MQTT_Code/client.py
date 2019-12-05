@@ -83,7 +83,7 @@ while True:
 			my_row = data_array[1]
 			my_col = data_array[2]
 			send_data = ";"
-			send_data = send_data.join([my_name, MY_ID, my_row, my_col])
+			send_data = send_data.join([my_row,my_col,my_name,"",MY_ID])
 			publish.single(send_path, send_data, hostname = MQTT_SERVER)
 
 	except IOError:
