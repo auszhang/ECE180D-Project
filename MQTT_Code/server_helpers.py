@@ -5,6 +5,8 @@ def parse_from_string(s):
 
 def parse_from_strings(S):
     data = []
+    # Reverse so that data received later is first.
+    S = S.reverse()
     for s in S:
         data.append(parse_from_string(s))
     return data
@@ -71,8 +73,8 @@ def localize(data, grid, name_grid):
         grid[row-1][col-1] = client_id
         name_grid[row-1][col-1] = name
         # set client's neighbor's name
-        if (col-1)!=0:
-            name_grid[row-1][col-2] = neighbor
+        # if (col-1)!=0:
+            # name_grid[row-1][col-2] = neighbor
     return grid, name_grid, True
 
 def localize_all(data_array):
