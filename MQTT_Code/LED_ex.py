@@ -34,8 +34,8 @@ def enact_lights_basic(pixels, data, my_id):
     print(my_id)
     for msg in light_msgs:
         #client_id = msg[:-9]
-        stuff = msg.split(".")
-        client_id = stuff[0]
+        msgs = msg.split(".")
+        client_id = msgs[0]
         print(client_id)
         if client_id == my_id:
             light_msg = msg[-8:]

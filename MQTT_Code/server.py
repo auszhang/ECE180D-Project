@@ -20,10 +20,19 @@ def on_connect(client, userdata, flags, rc):
 	client.subscribe(listen_path)
 
 def on_message(client, userdata, msg):
-    statement = msg.payload
-    rec_client_strings.append(statement.decode("utf-8"))
-    print(msg.topic + " " + str(statement))
-    time.sleep(2)
+    byte_statement = msg.payload
+    statement = byte_statement.decode("utf-8")
+    if "DIED" in statement:
+        sst = statement.split(".")
+        dead_client = sst[0]
+        rec_copy = rec_client_strings.copy()
+        for rec_client in rec_copy:
+            if dead_client in rec_client:
+                rec_client_strings.remove(rec_client)
+    else:
+        rec_client_strings.append(statement)
+        print(msg.topic + " " + str(statement))
+        time.sleep(2)
 
 def assign_lighting(grid, cycle, num_clients):
     msg = ""

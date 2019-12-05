@@ -32,6 +32,7 @@ MQTT_SERVER = "192.168.43.130" #for Litty
 listen_path = "topic/serene"
 send_path = "topic/init_loc"
 MY_ID = ""
+LAST_WILL = ""
 
 # Configure the count of pixels:
 PIXEL_COUNT = 8
@@ -78,10 +79,15 @@ while True:
 		print("received [%s]") % data
 		data_array = data.split(";")
 		if len(data_array) == 3:
+			# Parse client data from Bluetooth data.
 			my_name = data_array[0]
-			MY_ID = str(hash(my_name))
 			my_row = data_array[1]
 			my_col = data_array[2]
+			# Generate my client ID, set last will.
+			MY_ID = str(hash(my_name))
+			LAST_WILL = MY_ID + "DIED"
+			client.will_set(send_path,LAST_WILL,0,False)
+			# Send payload to server.
 			send_data = ";"
 			send_data = send_data.join([my_row,my_col,my_name,"",MY_ID])
 			publish.single(send_path, send_data, hostname = MQTT_SERVER)
