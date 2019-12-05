@@ -31,6 +31,7 @@ MQTT_SERVER = "192.168.43.130" #for Litty
 #MQTT_SERVER = "192.168.0.135" #for Naruto
 listen_path = "topic/serene"
 send_path = "topic/init_loc"
+MY_ID = ""
 
 # Configure the count of pixels:
 PIXEL_COUNT = 8
@@ -53,7 +54,7 @@ def on_message(client, userdata, msg):
 				
 			else:
 				print("other")
-				LED.enact_lights_basic(pixels, str(statement)) #line added by Serene
+				LED.enact_lights_basic(pixels, str(statement), MY_ID) #line added by Serene
 				# LED.blink_color(pixels, blink_times = 3,color= (0, 0, 100))
 
 # Initialize MQTT client.
@@ -78,11 +79,11 @@ while True:
 		data_array = data.split(";")
 		if len(data_array) == 3:
 			my_name = data_array[0]
-			my_id = str(hash(my_name))
+			MY_ID = str(hash(my_name))
 			my_row = data_array[1]
 			my_col = data_array[2]
 			send_data = ";"
-			send_data = send_data.join([my_name, my_id, my_row, my_col])
+			send_data = send_data.join([my_name, MY_ID, my_row, my_col])
 			publish.single(send_path, send_data, hostname = MQTT_SERVER)
 
 	except IOError:

@@ -27,14 +27,19 @@ def one_at_a_time(pixels, wait=0.9,color=(255,0,0)):
         if wait > 0:
             time.sleep(wait)
 
-def enact_lights_basic(pixels, light_msg):
+def enact_lights_basic(pixels, data, my_id):
     pixels.clear()
-    print(light_msg)
-    for j in range(len(light_msg)):
-        #print(int(j))
-        c1=int(light_msg[j])*50;
-        pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(0,0, c1 )) #preset to blue
-    pixels.show()
+    print(data)
+    light_msgs = data.split(" ")
+    for msg in light_msgs:
+        client_id = msg[:-8]
+        if client_id == my_id:
+            light_msg = msg[-8:]
+            for j in range(len(light_msg)):
+                #print(int(j))
+                c1=int(light_msg[j])*50;
+                pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(0,0, c1 )) #preset to blue
+            pixels.show()
 
  ## EXAMPLE CODE
 # Define the wheel function to interpolate between different hues.
