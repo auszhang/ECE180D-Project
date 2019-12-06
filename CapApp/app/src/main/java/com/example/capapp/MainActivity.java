@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         {
             for(BluetoothDevice device : pairedDevices)
             {
-                if(device.getName().equals("raspberrypi")) //Note, you will need to change this to match the name of your device
+                if(device.getName().toLowerCase().contains("pi")) //Note, you will need to change this to match the name of your device
                 {
                     Log.e("MAIN",device.getName());
                     mmDevice = device;
