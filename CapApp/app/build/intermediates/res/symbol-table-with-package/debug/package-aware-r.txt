@@ -999,6 +999,7 @@ drawable avd_hide_password
 drawable avd_show_password
 drawable coachmark
 drawable coachmark1
+drawable coachmark_bt
 drawable design_bottom_navigation_item_background
 drawable design_fab_background
 drawable design_ic_visibility
@@ -1075,7 +1076,9 @@ id chronometer
 id clip_horizontal
 id clip_vertical
 id coach_mark_master_view
+id coach_mark_master_view_bt
 id coach_marks_image
+id coach_marks_image_bt
 id collapseActionView
 id container
 id content
@@ -1291,6 +1294,7 @@ layout activity_display_bluetooth_setup
 layout activity_display_position
 layout activity_main
 layout coach_mark
+layout coach_mark_bt
 layout content_main
 layout design_bottom_navigation_item
 layout design_bottom_sheet_dialog

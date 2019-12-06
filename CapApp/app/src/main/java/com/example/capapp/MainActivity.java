@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     final byte delimiter = 33;
     int readBufferPosition = 0;
     SharedPreferences prefs = null;
+    Button sendButton;
 
     public void sendBtMsg(String msg2send){
         //UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"); //Standard SerialPortService ID
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         prefs = getSharedPreferences("com.example.capapp", MODE_PRIVATE);
+        sendButton = findViewById(R.id.button);
 //        topLevelLayout= findViewById(R.id.top_layout);
 
 
@@ -165,8 +168,9 @@ public class MainActivity extends AppCompatActivity {
         if (prefs.getBoolean("firstrun", true)) {
             // Do first run stuff here then set 'firstrun' as false
             // using the following line to edit/commit prefs
+            sendButton.setEnabled(false);
             onCoachMark();
-            prefs.edit().putBoolean("firstrun", false).commit();
+//            prefs.edit().putBoolean("firstrun", false).commit();
         }
     }
 
