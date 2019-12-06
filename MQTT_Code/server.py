@@ -29,9 +29,9 @@ def assign_lighting(grid, cycle, num_clients):
     msg = ""
     if num_clients == 1:
         msg = steady_on(grid, cycle)
-    elif num_clients = 2:
+    elif (num_clients == 2):
         msg = flash_slow(grid, cycle)
-    elif num_clients = 3:
+    elif num_clients == 3:
         msg = flash_fast(grid, cycle)
     elif num_clients == 4:
         msg = UCLA_light_scheme(grid, cycle)
