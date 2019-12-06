@@ -3,20 +3,25 @@ package com.example.capapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -29,6 +34,7 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
     private ArrayList<String> deviceArrayListNames = new ArrayList<>();
     private DeviceListAdapter mDeviceAdapter;
     ListView lv;
+    SharedPreferences prefs = null;
 
 
     @Override
@@ -46,6 +52,8 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
         deviceArrayList = new ArrayList<>();
         deviceArrayListNames = new ArrayList<>();
 
+        prefs = getSharedPreferences("com.example.capapp", MODE_PRIVATE);
+
         // Broadcasts when pairing (band state change)
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(mBroadcastReceiver2, filter);
@@ -59,6 +67,20 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
                 enableDisableBT();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (prefs.getBoolean("firstrun", true)) {
+            // Do first run stuff here then set 'firstrun' as false
+            // using the following line to edit/commit prefs
+
+            onCoachMark();
+            prefs.edit().putBoolean("firstrun", false).commit();
+
+        }
     }
 
     /** Toggles Bluetooth, called by the Bluetooth ON/OFF button **/
@@ -261,6 +283,24 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
             }
         }
     };
+    public void onCoachMark(){
+
+        final Dialog dialog = new Dialog(this);
+        dialog.getWindow().setLayout(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setContentView(R.layout.coach_mark_bt);
+        dialog.setCanceledOnTouchOutside(true);
+        //for dismissing anywhere you touch
+        View masterView = dialog.findViewById(R.id.coach_mark_master_view_bt);
+        masterView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
 
 
 //    public void visible(View v){

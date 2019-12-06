@@ -1,10 +1,12 @@
 package com.example.capapp;
 
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -19,6 +21,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,9 +38,11 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.example.capapp.MESSAGE";
     BluetoothSocket mmSocket;
     BluetoothDevice mmDevice = null;
-    View topLevelLayout;
+//    View topLevelLayout;
     final byte delimiter = 33;
     int readBufferPosition = 0;
+    SharedPreferences prefs = null;
+    Button sendButton;
 
     public void sendBtMsg(String msg2send){
         //UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"); //Standard SerialPortService ID
@@ -67,14 +73,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        topLevelLayout= findViewById(R.id.top_layout);
+        prefs = getSharedPreferences("com.example.capapp", MODE_PRIVATE);
+        sendButton = findViewById(R.id.button);
+//        topLevelLayout= findViewById(R.id.top_layout);
+
+
+
+
 
         final Handler handler = new Handler();
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        if (isFirstTime()) {
-            topLevelLayout.setVisibility(View.INVISIBLE);
-        }
+
 
         final class workerThread implements Runnable {
 
@@ -152,6 +162,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (prefs.getBoolean("firstrun", true)) {
+            // Do first run stuff here then set 'firstrun' as false
+            // using the following line to edit/commit prefs
+            sendButton.setEnabled(false);
+            onCoachMark();
+//            prefs.edit().putBoolean("firstrun", false).commit();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -194,27 +217,26 @@ public class MainActivity extends AppCompatActivity {
     private boolean isFirstTime()
     {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        boolean ranBefore = preferences.getBoolean("RanBefore", false);
-        if (!ranBefore) {
+        return preferences.getBoolean("RanBefore", false);
+    }
 
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean("RanBefore", true);
-            editor.commit();
-            topLevelLayout.setVisibility(View.VISIBLE);
-            topLevelLayout.setOnTouchListener(new View.OnTouchListener(){
+    public void onCoachMark(){
 
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    topLevelLayout.setVisibility(View.INVISIBLE);
-                    return false;
-                }
-
-            });
-
-
-        }
-        return ranBefore;
-
+        final Dialog dialog = new Dialog(this);
+        dialog.getWindow().setLayout(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setContentView(R.layout.coach_mark);
+        dialog.setCanceledOnTouchOutside(true);
+        //for dismissing anywhere you touch
+        View masterView = dialog.findViewById(R.id.coach_mark_master_view);
+        masterView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
 
