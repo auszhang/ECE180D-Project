@@ -87,8 +87,8 @@
 52-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:42:9-51:20
 53            android:name="com.example.capapp.MainActivity"
 53-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:43:13-41
-54            android:label="Home"
-54-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:44:13-33
+54            android:label="CapApp"
+54-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:44:13-35
 55            android:theme="@style/AppTheme.NoActionBar" >
 55-->C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:45:13-56
 56            <intent-filter>

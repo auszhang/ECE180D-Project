@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -14,10 +15,12 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.os.Handler;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.example.capapp.MESSAGE";
     BluetoothSocket mmSocket;
     BluetoothDevice mmDevice = null;
-
+    View topLevelLayout;
     final byte delimiter = 33;
     int readBufferPosition = 0;
 
@@ -64,10 +67,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        topLevelLayout= findViewById(R.id.top_layout);
 
         final Handler handler = new Handler();
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
+        if (isFirstTime()) {
+            topLevelLayout.setVisibility(View.INVISIBLE);
+        }
 
         final class workerThread implements Runnable {
 
@@ -182,6 +189,32 @@ public class MainActivity extends AppCompatActivity {
     public void setupBluetooth(View view) {
         Intent intent = new Intent(this, DisplayBluetoothSetup.class);
         startActivity(intent);
+    }
+
+    private boolean isFirstTime()
+    {
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        boolean ranBefore = preferences.getBoolean("RanBefore", false);
+        if (!ranBefore) {
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("RanBefore", true);
+            editor.commit();
+            topLevelLayout.setVisibility(View.VISIBLE);
+            topLevelLayout.setOnTouchListener(new View.OnTouchListener(){
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    topLevelLayout.setVisibility(View.INVISIBLE);
+                    return false;
+                }
+
+            });
+
+
+        }
+        return ranBefore;
+
     }
 
 

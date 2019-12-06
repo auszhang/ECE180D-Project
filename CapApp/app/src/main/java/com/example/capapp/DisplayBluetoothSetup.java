@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
     private static final String TAG = "DisplayBluetoothSetup";
     private BluetoothAdapter BA;
     private ArrayList<BluetoothDevice> deviceArrayList = new ArrayList<>();
+    private ArrayList<String> deviceArrayListNames = new ArrayList<>();
     private DeviceListAdapter mDeviceAdapter;
     ListView lv;
 
@@ -42,6 +44,7 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
         BA = BluetoothAdapter.getDefaultAdapter();
 
         deviceArrayList = new ArrayList<>();
+        deviceArrayListNames = new ArrayList<>();
 
         // Broadcasts when pairing (band state change)
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
@@ -246,9 +249,14 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
 
             if (action.equals(BluetoothDevice.ACTION_FOUND)){
                 BluetoothDevice device = intent.getParcelableExtra (BluetoothDevice.EXTRA_DEVICE);
-                deviceArrayList.add(device);
+
+                if(device.getName() != null){
+                    deviceArrayList.add(device);
+                    deviceArrayListNames.add(device.getName()); // for testing
+                }
                 Log.d(TAG, "onReceive: " + device.getName() + ": " + device.getAddress());
                 mDeviceAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, deviceArrayList);
+
                 lv.setAdapter(mDeviceAdapter);
             }
         }
