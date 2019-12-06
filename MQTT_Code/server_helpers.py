@@ -6,7 +6,7 @@ def parse_from_string(s):
 def parse_from_strings(S):
     data = []
     # Reverse so that data received later is first.
-    S = S.reverse()
+    S = reversed(S)
     for s in S:
         data.append(parse_from_string(s))
     return data
@@ -36,11 +36,6 @@ def find_max_full_grid(grid):
                 max_j = j 
   
     return max_i-max_of_s+1, max_i, max_j-max_of_s+1, max_j
-
-def assign_lighting(grid, cycle):
-    if cycle%2 == 0:
-        return "Mode 2"
-    return "Mode 1"
 
 # localize maps clients to their position in the display grid.
 def localize(data, grid, name_grid):

@@ -82,6 +82,10 @@ ALL_OFF = [[0,0,0],
           [0,0,0],
           [0,0,0]]
 
+ONE_ON = [[1,0,0],
+          [0,0,0],
+          [0,0,1]]
+
 def tell_lighting(client_id, lighting): 
     #currently not accounting for color assignments
     msg = str(client_id) + str(lighting[2][1]) + str(lighting[2][2]) + str(lighting[1][2])\
@@ -121,7 +125,8 @@ def steady_on(grid, cycle):
     msg = ""
     for row in grid:
         for client_id in row:
-            msg += tell_lighting(client_id, ALL_ON)
+            # msg += tell_lighting(client_id, ALL_ON) 
+            msg += tell_lighting(client_id, ONE_ON)
     return msg
 
 def steady_off(grid, cycle):
@@ -137,6 +142,7 @@ def flash_slow(grid, cycle):
         msg = steady_on(grid, cycle)
     else:
         msg = steady_off(grid, cycle)
+    return msg
         
 def flash_fast(grid, cycle):
     msg = ""
@@ -144,5 +150,6 @@ def flash_fast(grid, cycle):
         msg = steady_on(grid, cycle)
     else:
         msg = steady_off(grid, cycle)
+    return msg
         
     
