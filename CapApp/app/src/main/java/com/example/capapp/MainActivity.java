@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Handler;
+import androidx.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        prefs = getSharedPreferences("com.example.capapp", MODE_PRIVATE);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
         sendButton = findViewById(R.id.button);
 //        topLevelLayout= findViewById(R.id.top_layout);
 
@@ -165,12 +166,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+
+        // THIS WORKS
         if (prefs.getBoolean("firstrun", true)) {
             // Do first run stuff here then set 'firstrun' as false
             // using the following line to edit/commit prefs
             sendButton.setEnabled(false);
             onCoachMark();
-//            prefs.edit().putBoolean("firstrun", false).commit();
+            prefs.edit().putBoolean("second", false).apply();
+        }
+
+        //THIS DOESN'T - code in displaybtsetup not committing the changes?
+        else if( prefs.getBoolean("second", true)) {
+            sendButton.setEnabled(true);
+            onCoachMarkSend();
+            prefs.edit().putBoolean("firstrun", false).apply();
+            prefs.edit().putBoolean("second", false).apply();
         }
     }
 
@@ -230,6 +241,25 @@ public class MainActivity extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(true);
         //for dismissing anywhere you touch
         View masterView = dialog.findViewById(R.id.coach_mark_master_view);
+        masterView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    public void onCoachMarkSend(){
+
+        final Dialog dialog = new Dialog(this);
+        dialog.getWindow().setLayout(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setContentView(R.layout.coach_mark_second);
+        dialog.setCanceledOnTouchOutside(true);
+        //for dismissing anywhere you touch
+        View masterView = dialog.findViewById(R.id.coach_mark_master_view_send);
         masterView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

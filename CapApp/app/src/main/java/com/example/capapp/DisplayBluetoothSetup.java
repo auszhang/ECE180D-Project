@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import androidx.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -52,7 +53,7 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
         deviceArrayList = new ArrayList<>();
         deviceArrayListNames = new ArrayList<>();
 
-        prefs = getSharedPreferences("com.example.capapp", MODE_PRIVATE);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Broadcasts when pairing (band state change)
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
@@ -78,7 +79,9 @@ public class DisplayBluetoothSetup extends AppCompatActivity implements AdapterV
             // using the following line to edit/commit prefs
 
             onCoachMark();
-            prefs.edit().putBoolean("firstrun", false).commit();
+            prefs.edit().putBoolean("firstrun", false).apply();
+            prefs.edit().putBoolean("second", true).apply();
+
 
         }
     }
