@@ -38,12 +38,16 @@ def assign_lighting(grid, cycle, num_clients):
     msg = ""
     if num_clients == 1:
         msg = steady_on(grid, cycle)
-    elif num_clients = 2:
+        print("steady_on")
+    elif (num_clients == 2):
         msg = flash_slow(grid, cycle)
-    elif num_clients = 3:
+        print("flash_slow")
+    elif num_clients == 3:
         msg = flash_fast(grid, cycle)
+        print("flash_fast")
     elif num_clients == 4:
         msg = UCLA_light_scheme(grid, cycle)
+        print("UCLA_light_scheme")
     return msg
 
 client = mqtt.Client()
@@ -54,12 +58,14 @@ client.connect(MQTT_SERVER, 1883, 60)
 #client.loop_forever()
 client.loop_start()
 while True:
-    time.sleep(5)
+    time.sleep(2)
     if len(rec_client_strings) >= MIN_CLIENTS:
         client_data = parse_from_strings(rec_client_strings)
+        print(client_data)
         grid, _ = localize_all(client_data)
         light_asgns = assign_lighting(grid, cycle, len(client_data))
-
+        print("THIS IS THE LIGHT ASSIGNMENT")
+        print(light_asgns)
         # client_id = 2
         # lighting = [[0,1,1], [0,0,0], [1,1,0]]
         #light_asgns = tell_lighting(client_id,lighting) #for Serene's testing
