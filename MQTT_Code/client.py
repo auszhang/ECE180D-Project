@@ -33,6 +33,7 @@ listen_path = "topic/serene"
 send_path = "topic/init_loc"
 MY_ID = ""
 LAST_WILL = ""
+INITIALIZED = False
 
 # Configure the count of pixels:
 PIXEL_COUNT = 8
@@ -59,12 +60,12 @@ def on_message(client, userdata, msg):
 				# LED.blink_color(pixels, blink_times = 3,color= (0, 0, 100))
 
 # Initialize MQTT client.
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
-client.connect(MQTT_SERVER, 1883, 60)
+#client = mqtt.Client()
+#client.on_connect = on_connect
+#client.on_message = on_message
+#client.connect(MQTT_SERVER, 1883, 60)
 # Start MQTT client in separate thread.
-client.loop_start()
+#client.loop_start()
 
 while True:
 	print("Waiting for connection on RFCOMM channel %d")% port
@@ -85,8 +86,15 @@ while True:
 			my_col = data_array[2]
 			# Generate my client ID, set last will.
 			MY_ID = str(hash(my_name))
-			LAST_WILL = MY_ID + "DIED"
-			client.will_set(send_path,LAST_WILL,0,False)
+                        if not INITIALIZED:
+                            client = mqtt.Client()
+                            LAST_WILL = MY_ID + "DIED"
+                            client.on_connect=on_connect
+                            client.on_message=on_message
+                            client.will_set(send_path,str.encode(LAST_WILL),0,False)
+                            client.connect(MQTT_SERVER, 1883, 60)
+                            client.loop_start()
+                            INITIALIZED = True
 			# Send payload to server.
 			send_data = ";"
 			send_data = send_data.join([my_row,my_col,my_name,"",MY_ID])
