@@ -121,7 +121,7 @@ ADDED from C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\
 activity#com.example.capapp.MainActivity
 ADDED from C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:42:9-51:20
 	android:label
-		ADDED from C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:44:13-33
+		ADDED from C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:44:13-35
 	android:theme
 		ADDED from C:\Users\Austin\Documents\GitHub\ECE180D-Project\CapApp\app\src\main\AndroidManifest.xml:45:13-56
 	android:name
