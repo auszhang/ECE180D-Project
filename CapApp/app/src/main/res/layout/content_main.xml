@@ -51,27 +51,27 @@
 
     </RelativeLayout>
 
-    <!--Below is the transparent layout positioned at startup -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#88666666"
-        android:id="@+id/top_layout">
+<!--    &lt;!&ndash;Below is the transparent layout positioned at startup &ndash;&gt;-->
+<!--    <RelativeLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:background="#88666666"-->
+<!--        android:id="@+id/top_layout">-->
 
-        <ImageView
-            android:id="@+id/ivInstruction"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="false"
-            android:layout_marginEnd="15dp"
-            android:layout_marginRight="15dp"
-            android:clickable="false"
-            android:paddingLeft="20dip"
-            android:scaleType="center"
+<!--        <ImageView-->
+<!--            android:id="@+id/ivInstruction"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            android:layout_alignParentRight="false"-->
+<!--            android:layout_marginEnd="15dp"-->
+<!--            android:layout_marginRight="15dp"-->
+<!--            android:clickable="false"-->
+<!--            android:paddingLeft="20dip"-->
+<!--            android:scaleType="center"-->
 
-            />
+<!--            />-->
 
-    </RelativeLayout>
+<!--    </RelativeLayout>-->
 
 </FrameLayout>

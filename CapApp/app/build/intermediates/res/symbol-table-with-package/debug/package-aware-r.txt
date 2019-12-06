@@ -997,6 +997,8 @@ drawable abc_vector_test
 drawable arrow
 drawable avd_hide_password
 drawable avd_show_password
+drawable coachmark
+drawable coachmark1
 drawable design_bottom_navigation_item_background
 drawable design_fab_background
 drawable design_ic_visibility
@@ -1072,6 +1074,8 @@ id checkbox
 id chronometer
 id clip_horizontal
 id clip_vertical
+id coach_mark_master_view
+id coach_marks_image
 id collapseActionView
 id container
 id content
@@ -1119,7 +1123,6 @@ id info
 id invisible
 id italic
 id item_touch_helper_previous_elevation
-id ivInstruction
 id labeled
 id largeLabel
 id left
@@ -1220,7 +1223,6 @@ id title_template
 id toolbar
 id top
 id topPanel
-id top_layout
 id touch_outside
 id transition_current_scene
 id transition_layout_save
@@ -1288,6 +1290,7 @@ layout abc_tooltip
 layout activity_display_bluetooth_setup
 layout activity_display_position
 layout activity_main
+layout coach_mark
 layout content_main
 layout design_bottom_navigation_item
 layout design_bottom_sheet_dialog
