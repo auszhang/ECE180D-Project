@@ -45,7 +45,31 @@ def enact_lights_basic(pixels, data, my_id):
                 c1=int(light_msg[j])*50;
                 pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(0,0, c1 )) #preset to blue
             pixels.show()
-            time.sleep(0.2)
+            # time.sleep(0.2)
+
+def enact_lights_basic_with_color(pixels, data, my_id, color):
+    # NEED TO TEST SOON!!!!!!!!!!!!!!!!!!
+    
+    pixels.clear()
+    print(str(data))
+    light_msgs = data.split("#")
+    print(str(my_id))
+    for msg in light_msgs:
+        #client_id = msg[:-9]
+        msgs = msg.split(".")
+        client_id = msgs[0]
+        print(str(client_id))
+        if client_id == my_id:
+            light_msg = msg[-8:]
+            print(str(light_msg))
+            for j in range(len(light_msg)):
+                #print(int(j))
+                r1=int(light_msg[j])*color[0];
+                g1=int(light_msg[j])*color[1];
+                b1=int(light_msg[j])*color[2];
+                pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(r1,g1,b1 )) #preset to blue
+            pixels.show()
+            # time.sleep(0.2)
     
 
  ## EXAMPLE CODE

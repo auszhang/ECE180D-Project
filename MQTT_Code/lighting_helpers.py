@@ -86,6 +86,67 @@ ONE_ON = [[1,0,0],
           [0,0,0],
           [0,0,1]]
 
+#BOTTOM RIGHT MISSING
+cap_UL = [[1,1,1],
+          [1,0,0],
+          [1,0,1]]
+cap_DL = [[1,0,1],
+          [1,0,1],
+          [1,1,1]]
+cap_UR = [[1,1,1],
+          [0,0,1],
+          [1,1,1]]
+BR_missing = []
+BR_missing.append(cap_UL)
+BR_missing.append(cap_UR)
+BR_missing.append(cap_DL)
+
+#BOTTOM LEFT MISSING
+cap_UL = [[1,1,1],
+          [1,0,0],
+          [1,1,1]]
+cap_DR = [[1,0,1],
+          [1,0,1],
+          [1,1,1]]
+cap_UR = [[1,1,1],
+          [0,0,1],
+          [1,0,1]]
+BL_missing = []
+BL_missing.append(cap_UL)
+BL_missing.append(cap_UR)
+BL_missing.append(cap_DR)
+
+#UPPER RIGHT MISSING
+cap_UL = [[1,1,1],
+          [1,0,1],
+          [1,0,1]]
+cap_DL = [[1,0,1],
+          [1,0,0],
+          [1,1,1]]
+cap_DR = [[1,1,1],
+          [0,0,1],
+          [1,0,1]]
+UR_missing= []
+UR_missing.append(cap_UL)
+UR_missing.append(cap_DL)
+UR_missing.append(cap_DR)
+
+#UPPER LEFT MISSING
+cap_UR = [[1,1,1],
+          [1,0,1],
+          [1,0,1]]
+cap_DL = [[1,1,1],
+          [1,0,0],
+          [1,1,1]]
+cap_DR = [[1,0,1],
+          [0,0,1],
+          [1,0,1]]
+UL_missing= []
+UL_missing.append(cap_UR)
+UL_missing.append(cap_DL)
+UL_missing.append(cap_DR)
+
+
 def tell_lighting(client_id, lighting): 
     #currently not accounting for color assignments
     msg = str(client_id) + str(lighting[2][1]) + str(lighting[2][2]) + str(lighting[1][2])\
@@ -120,6 +181,33 @@ def UCLA_light_scheme(grid, cycle):
         msg += tell_lighting(grid[1][0],A_ASGN[2])
         msg += tell_lighting(grid[1][1],A_ASGN[3])
     return msg
+
+def three_connected(grid,cycle):
+    msg = ""
+    if (grid[0][0]==0): #top left is empty
+        msg += tell_lighting(grid[0][1], UL_missing[0])
+        msg += tell_lighting(grid[1][0], UL_missing[1])
+        msg += tell_lighting(grid[1][1], UL_missing[2])
+
+    elif (grid[0][1]==0):
+        msg += tell_lighting(grid[0][0], UR_missing[0])
+        msg += tell_lighting(grid[1][0], UR_missing[1])
+        msg += tell_lighting(grid[1][1], UR_missing[2])
+
+    elif (grid[1][0]==0):
+        msg += tell_lighting(grid[0][0], BL_missing[0])
+        msg += tell_lighting(grid[0][1], BL_missing[1])
+        msg += tell_lighting(grid[1][1], BL_missing[2])
+
+    elif (grid[1][1]==0):
+        msg += tell_lighting(grid[0][0], BR_missing[0])
+        msg += tell_lighting(grid[0][1], BR_missing[1])
+        msg += tell_lighting(grid[1][0], BR_missing[2])
+
+    else:
+        print("MISSING PERSON NEVER FOUND")
+    return msg
+
 
 def steady_on(grid, cycle):
     msg = ""

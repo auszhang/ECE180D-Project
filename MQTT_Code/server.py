@@ -22,32 +22,34 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     byte_statement = msg.payload
     statement = byte_statement.decode("utf-8")
+    print(msg.topic + " " + str(statement))
     if "DIED" in statement:
-        sst = statement.split(".")
-        dead_client = sst[0]
+        dead_client = statement[:-4]
         rec_copy = rec_client_strings.copy()
         for rec_client in rec_copy:
             if dead_client in rec_client:
                 rec_client_strings.remove(rec_client)
     else:
         rec_client_strings.append(statement)
-        print(msg.topic + " " + str(statement))
+        
         time.sleep(2)
 
 def assign_lighting(grid, cycle, num_clients):
     msg = ""
     if num_clients == 1:
         msg = steady_on(grid, cycle)
-        print("steady_on")
+        #print("steady_on")
     elif (num_clients == 2):
         msg = flash_slow(grid, cycle)
-        print("flash_slow")
+        #print("flash_slow")
     elif num_clients == 3:
-        msg = flash_fast(grid, cycle)
-        print("flash_fast")
+        #msg = flash_fast(grid, cycle)
+        #print("flash_fast")
+        print('three connected')
+        msg = three_connected(grid,cycle)
     elif num_clients == 4:
         msg = UCLA_light_scheme(grid, cycle)
-        print("UCLA_light_scheme")
+        #print("UCLA_light_scheme")
     return msg
 
 client = mqtt.Client()
@@ -58,7 +60,7 @@ client.connect(MQTT_SERVER, 1883, 60)
 #client.loop_forever()
 client.loop_start()
 while True:
-    time.sleep(2)
+    time.sleep(3)
     if len(rec_client_strings) >= MIN_CLIENTS:
         client_data = parse_from_strings(rec_client_strings)
         print(client_data)
