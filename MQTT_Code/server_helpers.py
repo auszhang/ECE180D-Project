@@ -11,6 +11,12 @@ def parse_from_strings(S):
         data.append(parse_from_string(s))
     return data
 
+def parse_from_strings_hash(H):
+    data = []
+    for key in H:
+        data.append(parse_from_string(H[key]))
+    return data
+
 def find_max_full_grid(grid): 
     num_rows = len(grid)
     num_cols = len(grid[0]) 
