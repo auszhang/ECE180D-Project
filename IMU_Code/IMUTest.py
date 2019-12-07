@@ -7,53 +7,38 @@ import IMU
 import datetime
 import os
 import subprocess
-# If the IMU is upside down (Skull logo facing up), change this value to 1
-IMU_UPSIDE_DOWN = 1	
 
-RAD_TO_DEG = 57.29578
-M_PI = 3.14159265358979323846
-G_GAIN = 0.070  	# [deg/s/LSB]  If you change the dps for gyro, you need to update this value accordingly
-AA =  0.40      	# Complementary filter constant
-MAG_LPF_FACTOR = 0.4 	# Low pass filter constant magnetometer
-ACC_LPF_FACTOR = 0.4 	# Low pass filter constant for accelerometer
-ACC_MEDIANTABLESIZE = 9    	# Median filter table size for accelerometer. Higher = smoother but a longer delay
-MAG_MEDIANTABLESIZE = 9    	# Median filter table size for magnetometer. Higher = smoother but a longer delay
+def calibrate(IMU):
 
-################# Compass Calibration values ############
-# Use calibrateBerryIMU.py to get calibration values 
-# Calibrating the compass isnt mandatory, however a calibrated 
-# compass will result in a more accurate heading value.
+    magXmin = 32767
+    magYmin = 32767
+    magZmin = 32767
+    magXmax = -32767
+    magYmax = -32767
+    magZmax = -32767
 
-magXmin = 2254
-magYmin =  -1878
-magZmin =  973
-magXmax = 2282
-magYmax =  -1848
-magZmax =  1052
+    for i in range(1000):
 
-compcallx = (magXmin + magXmax) /2
-compcally = (magYmin + magYmax) /2 
-compcallz = (magZmin + magZmax) /2 
+        #Read magnetometer values
+        MAGx = IMU.readMAGx()
+        MAGy = IMU.readMAGy()
+        MAGz = IMU.readMAGz()
 
+        if MAGx > magXmax:
+            magXmax = MAGx
+        if MAGy > magYmax:
+            magYmax = MAGy
+        if MAGz > magZmax:
+            magZmax = MAGz
 
-#Kalman filter variables
-Q_angle = 0.02
-Q_gyro = 0.0015
-R_angle = 0.005
-y_bias = 0.0
-x_bias = 0.0
-XP_00 = 0.0
-XP_01 = 0.0
-XP_10 = 0.0
-XP_11 = 0.0
-YP_00 = 0.0
-YP_01 = 0.0
-YP_10 = 0.0
-YP_11 = 0.0
-KFangleX = 0.0
-KFangleY = 0.0
+        if MAGx < magXmin:
+            magXmin = MAGx
+        if MAGy < magYmin:
+            magYmin = MAGy
+        if MAGz < magZmin:
+            magZmin = MAGz
 
-
+    return magXmin, magXmax, magYmin, magYmax, magZmin, magZmax
 
 def kalmanFilterY ( accAngle, gyroRate, DT):
 	y=0.0
@@ -126,7 +111,47 @@ def kalmanFilterX ( accAngle, gyroRate, DT):
 	
 	return KFangleX
 
-def read_IMU():
+if __name__ == "__main__":
+        # If the IMU is upside down (Skull logo facing up), change this value to 1
+    IMU_UPSIDE_DOWN = 1	
+
+    RAD_TO_DEG = 57.29578
+    M_PI = 3.14159265358979323846
+    G_GAIN = 0.070  	# [deg/s/LSB]  If you change the dps for gyro, you need to update this value accordingly
+    AA =  0.40      	# Complementary filter constant
+    MAG_LPF_FACTOR = 0.4 	# Low pass filter constant magnetometer
+    ACC_LPF_FACTOR = 0.4 	# Low pass filter constant for accelerometer
+    ACC_MEDIANTABLESIZE = 9    	# Median filter table size for accelerometer. Higher = smoother but a longer delay
+    MAG_MEDIANTABLESIZE = 9    	# Median filter table size for magnetometer. Higher = smoother but a longer delay
+
+    ################# Compass Calibration values ############
+    # Use calibrateBerryIMU.py to get calibration values 
+    # Calibrating the compass isnt mandatory, however a calibrated 
+    # compass will result in a more accurate heading value.
+
+    magXmin = 0
+    magYmin = 0
+    magZmin = 0
+    magXmax = 0
+    magYmax = 0
+    magZmax = 0
+
+    #Kalman filter variables
+    Q_angle = 0.02
+    Q_gyro = 0.0015
+    R_angle = 0.005
+    y_bias = 0.0
+    x_bias = 0.0
+    XP_00 = 0.0
+    XP_01 = 0.0
+    XP_10 = 0.0
+    XP_11 = 0.0
+    YP_00 = 0.0
+    YP_01 = 0.0
+    YP_10 = 0.0
+    YP_11 = 0.0
+    KFangleX = 0.0
+    KFangleY = 0.0
 
     gyroXangle = 0.0
     gyroYangle = 0.0
@@ -143,9 +168,7 @@ def read_IMU():
     oldXAccRawValue = 0
     oldYAccRawValue = 0
     oldZAccRawValue = 0
-
     a = datetime.datetime.now()
-
     #Setup the tables for the median filter. Fill them all with '1' so we dont get devide by zero error 
     acc_medianTable1X = [1] * ACC_MEDIANTABLESIZE
     acc_medianTable1Y = [1] * ACC_MEDIANTABLESIZE
@@ -162,6 +185,9 @@ def read_IMU():
 
     IMU.detectIMU()     #Detect if BerryIMUv1 or BerryIMUv2 is connected.
     IMU.initIMU()       #Initialise the accelerometer, gyroscope and compass
+    
+    magXmin, magXmax, magYmin, magYmax, magZmin, magZmax = calibrate(IMU)
+    print magXmin, magXmax, magYmin, magYmax, magZmin, magZmax
 
     while(1):
 
@@ -177,12 +203,9 @@ def read_IMU():
         MAGz = IMU.readMAGz()
 
         #Apply compass calibration    
-        MAGx -= compcallx
-        MAGy -= compcally 
-        MAGz -= compcallz 
-        print compcallx
-        print compcally
-        print compcallz 
+        MAGx -= (magXmin + magXmax) /2 
+        MAGy -= (magYmin + magYmax) /2 
+        MAGz -= (magZmin + magZmax) /2 
 
         ##Calculate loop Period(LP). How long between Gyro Reads
         b = datetime.datetime.now() - a
@@ -363,20 +386,19 @@ def read_IMU():
 
         ############################ END ##################################
 
-
-        if 1:			#Change to '0' to stop showing the angles from the accelerometer
+        if 0:			#Change to '0' to stop showing the angles from the accelerometer
             print ("# ACCX Angle %5.2f ACCY Angle %5.2f #  " % (AccXangle, AccYangle)),
 
-        if 1:			#Change to '0' to stop  showing the angles from the gyro
+        if 0:			#Change to '0' to stop  showing the angles from the gyro
             print ("\t# GRYX Angle %5.2f  GYRY Angle %5.2f  GYRZ Angle %5.2f # " % (gyroXangle,gyroYangle,gyroZangle)),
 
-        if 1:			#Change to '0' to stop  showing the angles from the complementary filter
+        if 0:			#Change to '0' to stop  showing the angles from the complementary filter
             print ("\t# CFangleX Angle %5.2f   CFangleY Angle %5.2f #" % (CFangleX,CFangleY)),
 
-        if 1:			#Change to '0' to stop  showing the heading
+        if 0:			#Change to '0' to stop  showing the heading
             print ("\t# HEADING %5.2f  tiltCompensatedHeading %5.2f #" % (heading,tiltCompensatedHeading)),
 
-        if 1:			#Change to '0' to stop  showing the angles from the Kalman filter
+        if 0:			#Change to '0' to stop  showing the angles from the Kalman filter
             print ("# kalmanX %5.2f   kalmanY %5.2f #" % (kalmanX,kalmanY)),
         if 1:
             print ("#MAGX %5.2f     #MAGY %5.2f     #MAGZ %5.2f     #MAGXCOMP %5.2f     #MAGYCOMP %5.2f" % (MAGx, MAGy, MAGz, magXcomp, magYcomp)),
@@ -384,11 +406,5 @@ def read_IMU():
         #print a new line
         print ""  
 
-def init_IMU():
-    os.system("sudo i2cdetect -y 1")
-
-if __name__ == "__main__":
-    #init_IMU()
-    read_IMU()
 
 

@@ -24,7 +24,7 @@ import IMU
 import datetime
 import os
 # If the IMU is upside down (Skull logo facing up), change this value to 1
-IMU_UPSIDE_DOWN = 0	
+IMU_UPSIDE_DOWN = 1	
 
 
 RAD_TO_DEG = 57.29578
@@ -43,24 +43,12 @@ MAG_MEDIANTABLESIZE = 9    	# Median filter table size for magnetometer. Higher 
 # Calibrating the compass isnt mandatory, however a calibrated 
 # compass will result in a more accurate heading value.
 
-magXmin =  0
-magYmin =  0
-magZmin =  0
-magXmax =  0
-magYmax =  0
-magZmax =  0
-
-
-'''
-Here is an example:
-magXmin =  -1748
-magYmin =  -1025
-magZmin =  -1876
-magXmax =  959
-magYmax =  1651
-magZmax =  708
-Dont use the above values, these are just an example.
-'''
+magXmin =  1779
+magYmin =  -2528
+magZmin =  -976
+magXmax =  4006
+magYmax =  -1431
+magZmax =  1287
 
 
 
@@ -393,26 +381,26 @@ while True:
     ############################ END ##################################
 
 
-    if 1:			#Change to '0' to stop showing the angles from the accelerometer
+    if 0:			#Change to '0' to stop showing the angles from the accelerometer
         print ("# ACCX Angle %5.2f ACCY Angle %5.2f #  " % (AccXangle, AccYangle)),
 
-    if 1:			#Change to '0' to stop  showing the angles from the gyro
+    if 0:			#Change to '0' to stop  showing the angles from the gyro
         print ("\t# GRYX Angle %5.2f  GYRY Angle %5.2f  GYRZ Angle %5.2f # " % (gyroXangle,gyroYangle,gyroZangle)),
 
-    if 1:			#Change to '0' to stop  showing the angles from the complementary filter
+    if 0:			#Change to '0' to stop  showing the angles from the complementary filter
         print ("\t# CFangleX Angle %5.2f   CFangleY Angle %5.2f #" % (CFangleX,CFangleY)),
         
     if 1:			#Change to '0' to stop  showing the heading
         print ("\t# HEADING %5.2f  tiltCompensatedHeading %5.2f #" % (heading,tiltCompensatedHeading)),
         
-    if 1:			#Change to '0' to stop  showing the angles from the Kalman filter
+    if 0:			#Change to '0' to stop  showing the angles from the Kalman filter
         print ("# kalmanX %5.2f   kalmanY %5.2f #" % (kalmanX,kalmanY)),
+    
+    if 0:
+            print ("#MAGX %5.2f              #MAGY %5.2f          #MAGZ %5.2f     #MAGXCOMP %5.2f     #MAGYCOMP %5.2f" % (MAGx, MAGy, MAGz, magXcomp, magYcomp)),
 
     #print a new line
     print ""  
 
-
-    #slow program down a bit, makes the output more readable
-    time.sleep(0.03)
 
 
