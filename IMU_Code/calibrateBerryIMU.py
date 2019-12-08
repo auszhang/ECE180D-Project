@@ -16,15 +16,27 @@ import math
 import IMU
 import datetime
 
+IMU_data = "../IMU_Local/IMU_data.txt"
 
 def handle_ctrl_c(signal, frame):
-    print " "
-    print "magXmin = ",  magXmin
-    print "magYmin = ",  magYmin
-    print "magZmin = ",  magZmin
-    print "magXmax = ",  magXmax
-    print "magYmax = ",  magYmax
-    print "magZmax = ",  magZmax
+    
+    f = open(IMU_data,'r')
+    data = f.read()
+    f = open(IMU_data,'w')
+    f.write(str(magXmin) + "\n")
+    f.write(str(magYmin) + "\n")
+    f.write(str(magZmin) + "\n")
+    f.write(str(magXmax) + "\n")
+    f.write(str(magYmax) + "\n")
+    f.write(str(magZmax) + "\n")
+    
+    #print " "
+    #print "magXmin = ",  magXmin
+    #print "magYmin = ",  magYmin
+    #print "magZmin = ",  magZmin
+    #print "magXmax = ",  magXmax
+    #print "magYmax = ",  magYmax
+    #print "magZmax = ",  magZmax
     sys.exit(130) # 130 is standard exit code for ctrl-c
 
 

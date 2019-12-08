@@ -8,12 +8,15 @@ import datetime
 import os
 import subprocess
 
-magXmin =  1630
-magYmin =  -2875
-magZmin =  -1000
-magXmax =  3995
-magYmax =  -554
-magZmax =  1415
+IMU_data = "../IMU_Local/IMU_data.txt"
+f = open(IMU_data,'r')
+
+magXmin =  float(f.readline())
+magYmin =  float(f.readline())
+magZmin =  float(f.readline())
+magXmax =  float(f.readline())
+magYmax =  float(f.readline())
+magZmax =  float(f.readline())
 
 # If the IMU is upside down (Skull logo facing up), change this value to 1
 IMU_UPSIDE_DOWN = 1	
