@@ -8,38 +8,6 @@ import datetime
 import os
 import subprocess
 
-def calibrate(IMU):
-
-    magXmin = 32767
-    magYmin = 32767
-    magZmin = 32767
-    magXmax = -32767
-    magYmax = -32767
-    magZmax = -32767
-
-    for i in range(1000):
-
-        #Read magnetometer values
-        MAGx = IMU.readMAGx()
-        MAGy = IMU.readMAGy()
-        MAGz = IMU.readMAGz()
-
-        if MAGx > magXmax:
-            magXmax = MAGx
-        if MAGy > magYmax:
-            magYmax = MAGy
-        if MAGz > magZmax:
-            magZmax = MAGz
-
-        if MAGx < magXmin:
-            magXmin = MAGx
-        if MAGy < magYmin:
-            magYmin = MAGy
-        if MAGz < magZmin:
-            magZmin = MAGz
-
-    return magXmin, magXmax, magYmin, magYmax, magZmin, magZmax
-
 def kalmanFilterY ( accAngle, gyroRate, DT):
 	y=0.0
 	S=0.0
@@ -186,9 +154,6 @@ if __name__ == "__main__":
 
     IMU.detectIMU()     #Detect if BerryIMUv1 or BerryIMUv2 is connected.
     IMU.initIMU()       #Initialise the accelerometer, gyroscope and compass
-    
-    #magXmin, magXmax, magYmin, magYmax, magZmin, magZmax = calibrate(IMU)
-    #print magXmin, magXmax, magYmin, magYmax, magZmin, magZmax
 
     while(1):
 
@@ -196,9 +161,9 @@ if __name__ == "__main__":
         ACCx = IMU.readACCx()
         ACCy = IMU.readACCy()
         ACCz = IMU.readACCz()
-        GYRx = IMU.readGYRx()
-        GYRy = IMU.readGYRy()
-        GYRz = IMU.readGYRz()
+        #GYRx = IMU.readGYRx()
+        #GYRy = IMU.readGYRy()
+        #GYRz = IMU.readGYRz()
         MAGx = IMU.readMAGx()
         MAGy = IMU.readMAGy()
         MAGz = IMU.readMAGz()
@@ -296,15 +261,15 @@ if __name__ == "__main__":
 
 
         #Convert Gyro raw to degrees per second
-        rate_gyr_x =  GYRx * G_GAIN
-        rate_gyr_y =  GYRy * G_GAIN
-        rate_gyr_z =  GYRz * G_GAIN
+        #rate_gyr_x =  GYRx * G_GAIN
+        #rate_gyr_y =  GYRy * G_GAIN
+        #rate_gyr_z =  GYRz * G_GAIN
 
 
         #Calculate the angles from the gyro. 
-        gyroXangle+=rate_gyr_x*LP
-        gyroYangle+=rate_gyr_y*LP
-        gyroZangle+=rate_gyr_z*LP
+        #gyroXangle+=rate_gyr_x*LP
+        #gyroYangle+=rate_gyr_y*LP
+        #gyroZangle+=rate_gyr_z*LP
 
         #Convert Accelerometer values to degrees
 
@@ -329,12 +294,12 @@ if __name__ == "__main__":
 
 
         #Complementary filter used to combine the accelerometer and gyro values.
-        CFangleX=AA*(CFangleX+rate_gyr_x*LP) +(1 - AA) * AccXangle
-        CFangleY=AA*(CFangleY+rate_gyr_y*LP) +(1 - AA) * AccYangle
+        #CFangleX=AA*(CFangleX+rate_gyr_x*LP) +(1 - AA) * AccXangle
+        #CFangleY=AA*(CFangleY+rate_gyr_y*LP) +(1 - AA) * AccYangle
 
         #Kalman filter used to combine the accelerometer and gyro values.
-        kalmanY = kalmanFilterY(AccYangle, rate_gyr_y,LP)
-        kalmanX = kalmanFilterX(AccXangle, rate_gyr_x,LP)
+        #kalmanY = kalmanFilterY(AccYangle, rate_gyr_y,LP)
+        #kalmanX = kalmanFilterX(AccXangle, rate_gyr_x,LP)
 
         if IMU_UPSIDE_DOWN:
             MAGy = -MAGy      #If IMU is upside down, this is needed to get correct heading.
@@ -401,6 +366,7 @@ if __name__ == "__main__":
 
         if 0:			#Change to '0' to stop  showing the angles from the Kalman filter
             print ("# kalmanX %5.2f   kalmanY %5.2f #" % (kalmanX,kalmanY)),
+        
         if 0:
             print ("#MAGX %5.2f     #MAGY %5.2f     #MAGZ %5.2f     #MAGXCOMP %5.2f     #MAGYCOMP %5.2f" % (MAGx, MAGy, MAGz, magXcomp, magYcomp)),
 
