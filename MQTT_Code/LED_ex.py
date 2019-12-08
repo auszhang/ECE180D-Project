@@ -40,6 +40,32 @@ def one_at_a_time(pixels, wait=0.9,color=(255,0,0)):
         if wait > 0:
             time.sleep(wait)
 
+# This is only used by the enact_lights_*_tilt functions and client_BT_and_IMU.py.
+# Given tiltHeading and a string lightMsg, return a rotated lightMsg.
+def get_rotation(tiltHeading, lightMsg):
+    rot_lm = lightMsg
+    if tiltHeading > 0 and tiltHeading <= 45:
+        # CHANGE THIS
+        pixels.set_pixel(0, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
+    elif tiltHeading > 45 and tiltHeading <= 90:
+        pixels.set_pixel(1, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
+    elif tiltHeading > 90 and tiltHeading <= 135:
+        pixels.set_pixel(2, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
+    elif tiltHeading > 135 and tiltHeading <= 180:
+        pixels.set_pixel(3, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
+    elif tiltHeading > 180 and tiltHeading <= 225:
+        pixels.set_pixel(4, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
+    elif tiltHeading > 225 and tiltHeading <= 270:
+        pixels.set_pixel(5, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
+    elif tiltHeading > 270 and tiltHeading <= 315:
+        pixels.set_pixel(6, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
+    elif tiltHeading > 315 and tiltHeading <= 360:
+        pixels.set_pixel(7, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
+    else:
+        # Don't do anything
+        return rot_lm
+    return rot_lm
+
 def enact_lights_basic(pixels, data, my_id):
     pixels.clear()
     print(str(data))
@@ -83,7 +109,92 @@ def enact_lights_with_color(pixels, data, my_id):
                 pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(r1,g1,b1 )) #preset to blue
             pixels.show()
             # time.sleep(0.2)
-    
+
+# enact_lights_basic incorporated with IMU
+def enact_lights_basic_tilt(pixels, data, tiltHeading, my_id):
+    pixels.clear()
+    print(str(data))
+    light_msgs = data.split("#")
+    print(str(my_id))
+    for msg in light_msgs:
+        #client_id = msg[:-9]
+        msgs = msg.split(".")
+        client_id = msgs[0]
+        print(str(client_id))
+        if client_id == my_id:
+            light_msg = msg[-8:]
+            print(str(light_msg))
+            # Get rotated light_msg.
+            rot_light_msg = get_rotation(tiltHeading, light_msg)
+            for j in range(len(rot_light_msg)):
+                #print(int(j))
+                c1=int(rot_light_msg[j])*50;
+                pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(0,0, c1 )) #preset to blue
+            pixels.show()
+            # Return UNROTATED light_msg.
+            return light_msg
+            # time.sleep(0.2)
+    return ''
+
+# Same functionality as enact_lights_basic_tilt, but take a light message directly as input data
+def parsed_basic_tilt(pixels, data, tiltHeading):
+    light_msg = data
+    print(str(light_msg))
+    # Get rotated light_msg.
+    rot_light_msg = get_rotation(tiltHeading, light_msg)
+    pixels.clear()
+    for j in range(len(rot_light_msg)):
+        c1=int(rot_light_msg[j])*50;
+        pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(0,0, c1 )) #preset to blue
+    pixels.show()
+    # Return UNROTATED light_msg.
+    return light_msg
+
+# enact_lights_with_color incorporated with IMU
+def enact_lights_with_color_tilt(pixels, data, tiltHeading, my_id):
+    pixels.clear()
+    print(str(data))
+    light_msgs = data.split("#")
+    print(str(my_id))
+    for msg in light_msgs:
+        #client_id = msg[:-9]
+        msgs = msg.split(".")
+        client_id = msgs[0]
+        print(str(client_id))
+        if client_id == my_id:
+            light_msg = msg[-8:]
+            print(str(light_msg))
+            # Get rotated light_msg.
+            rot_light_msg = get_rotation(tiltHeading, light_msg)
+            for j in range(len(rot_light_msg)):
+                
+                color = str2color(rot_light_msg[j])
+                r1=color[0] * MAX_INTENSITY/255;
+                g1=color[1] * MAX_INTENSITY/255;
+                b1=color[2] * MAX_INTENSITY/255;
+                pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(r1,g1,b1 )) #preset to blue
+            pixels.show()
+            # Return UNROTATED light_msg. 
+            return light_msg
+            # time.sleep(0.2)
+    return ''
+
+# Same functionality as enact_lights_with_color_tilt, but take a light message directly as input data
+def parsed_color_tilt(pixels, data, tiltHeading):
+    light_msg = data
+    print(str(light_msg))
+    # Get rotated light_msg.
+    rot_light_msg = get_rotation(tiltHeading, light_msg)
+    pixels.clear()
+    for j in range(len(rot_light_msg)):
+        color = str2color(rot_light_msg[j])
+        r1=color[0] * MAX_INTENSITY/255;
+        g1=color[1] * MAX_INTENSITY/255;
+        b1=color[2] * MAX_INTENSITY/255;
+        pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(r1,g1,b1 )) #preset to blue
+    pixels.show()
+    # Return UNROTATED light_msg. 
+    return light_msg
 
  ## EXAMPLE CODE
 # Define the wheel function to interpolate between different hues.

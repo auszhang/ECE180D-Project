@@ -433,5 +433,3 @@ def flash_fast(grid, cycle):
     else:
         msg = steady_off(grid, cycle)
     return msg
-        
-    
