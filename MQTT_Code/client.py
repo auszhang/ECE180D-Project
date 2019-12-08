@@ -51,13 +51,13 @@ def on_message(client, userdata, msg):
 			print("RPi received")
 			print(msg.topic + " " + str(statement))
 			if (str(statement) == "Mode 1"):
-    				print("Mode 1")
+    			print("Mode 1")
 				LED.blink_color(pixels, blink_times = 3, color=(100, 0, 0))
-				
+			elif (("b" in statement) or ("d" in statement)):
+    			print("enacting with color!!!!!!!!!!!")
+				LED.enact_lights_with_color(pixels,str(statement), MY_ID)
 			else:
-				print("other")
-				LED.enact_lights_basic(pixels, str(statement), MY_ID) #line added by Serene
-				# LED.blink_color(pixels, blink_times = 3,color= (0, 0, 100))
+    			LED.enact_lights_basic(pixels, str(statement), MY_ID)
 
 # Initialize MQTT client.
 #client = mqtt.Client()

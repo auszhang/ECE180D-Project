@@ -13,8 +13,21 @@ PIXEL_COUNT = 8
 SPI_PORT   = 0
 SPI_DEVICE = 0
 pixels = Adafruit_WS2801.WS2801Pixels(PIXEL_COUNT, spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE), gpio=GPIO)
- 
+
 #Serene's code here:
+BLUE = [0, 59, 91]
+GOLD = [254, 184, 28]
+MAX_INTENSITY = 150 #max intensity desired on these LEDs
+
+def str2color(c1):
+    col = [0,0,0]
+    if c1 == "d":
+        col = GOLD
+    elif c1 == "b":
+        col = BLUE
+    return col
+    
+
 def one_at_a_time(pixels, wait=0.9,color=(255,0,0)):
     pixels.clear()
     for i in range(pixels.count()):
@@ -47,9 +60,8 @@ def enact_lights_basic(pixels, data, my_id):
             pixels.show()
             # time.sleep(0.2)
 
-def enact_lights_basic_with_color(pixels, data, my_id, color):
-    # NEED TO TEST SOON!!!!!!!!!!!!!!!!!!
-    
+def enact_lights_with_color(pixels, data, my_id):
+    # NEED TO TEST SOON!!!!!!!!!!!!!!!!!!    
     pixels.clear()
     print(str(data))
     light_msgs = data.split("#")
@@ -63,10 +75,11 @@ def enact_lights_basic_with_color(pixels, data, my_id, color):
             light_msg = msg[-8:]
             print(str(light_msg))
             for j in range(len(light_msg)):
-                #print(int(j))
-                r1=int(light_msg[j])*color[0];
-                g1=int(light_msg[j])*color[1];
-                b1=int(light_msg[j])*color[2];
+                
+                color = str2color(light_msg[j])
+                r1=color[0] * MAX_INTENSITY/255;
+                g1=color[1] * MAX_INTENSITY/255;
+                b1=color[2] * MAX_INTENSITY/255;
                 pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(r1,g1,b1 )) #preset to blue
             pixels.show()
             # time.sleep(0.2)
@@ -76,13 +89,13 @@ def enact_lights_basic_with_color(pixels, data, my_id, color):
 # Define the wheel function to interpolate between different hues.
 def wheel(pos):
     if pos < 85:
-        return Adafruit_WS2801.RGB_to_color(pos * 3, 255 - pos * 3, 0)
+        return Adafruit_WS2801.RGB_to_color( (pos * 3) * MAX_INTENSITY/255, (255 - pos * 3)*MAX_INTENSITY/255, 0)
     elif pos < 170:
         pos -= 85
-        return Adafruit_WS2801.RGB_to_color(255 - pos * 3, 0, pos * 3)
+        return Adafruit_WS2801.RGB_to_color( (255 - pos * 3) * MAX_INTENSITY/255, 0, (pos * 3)*MAX_INTENSITY/255 )
     else:
         pos -= 170
-        return Adafruit_WS2801.RGB_to_color(0, pos * 3, 255 - pos * 3)
+        return Adafruit_WS2801.RGB_to_color(0, (pos * 3) * MAX_INTENSITY/255, (255 - pos * 3)*MAX_INTENSITY/255 )
  
 # Define rainbow cycle function to do a cycle of all hues.
 def rainbow_cycle_successive(pixels, wait=0.1):

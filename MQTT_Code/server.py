@@ -46,7 +46,8 @@ def assign_lighting(grid, cycle, num_clients):
         #msg = flash_fast(grid, cycle)
         #print("flash_fast")
         print('three connected')
-        msg = three_connected(grid,cycle)
+        msg = three_connected_colors(grid,cycle, "b", "d")
+        # msg = three_connected_basic(grid,cycle)
     elif num_clients == 4:
         msg = UCLA_light_scheme(grid, cycle)
         #print("UCLA_light_scheme")
