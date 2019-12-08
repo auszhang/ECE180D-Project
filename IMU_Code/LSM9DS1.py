@@ -1,7 +1,7 @@
 
 LSM9DS1_MAG_ADDRESS	= 0x1C	#Would be 0x1E if SDO_M is HIGH		
-LSM9DS1_ACC_ADDRESS	= 0x6A  
-LSM9DS1_GYR_ADDRESS = 0x6A  #Would be 0x6B if SDO_AG is HIGH
+LSM9DS1_ACC_ADDRESS	= 0x6B  
+LSM9DS1_GYR_ADDRESS = 0x6B  #Would be 0x6B if SDO_AG is HIGH
 
 
 #/////////////////////////////////////////

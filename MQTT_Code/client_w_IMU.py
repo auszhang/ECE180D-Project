@@ -15,7 +15,7 @@ import LED_ex as LED
 
 sys.path.insert(1, '../IMU_Code')
 
-import IMUTest as Compass
+import Compass
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(17, GPIO.OUT)
@@ -118,7 +118,28 @@ while True:
 #
 #		break
 
-	pixels.set_pixel(0, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
+	tiltHeading = Compass.readCompass(Compass.IMU)
+	print(tiltHeading)
+	if tiltHeading > 0 and tiltHeading <= 45:
+		pixels.set_pixel(0, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
+	elif tiltHeading > 45 and tiltHeading <= 90:
+		pixels.set_pixel(1, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
+	elif tiltHeading > 90 and tiltHeading <= 135:
+		pixels.set_pixel(2, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
+	elif tiltHeading > 135 and tiltHeading <= 180:
+		pixels.set_pixel(3, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
+	elif tiltHeading > 180 and tiltHeading <= 225:
+		pixels.set_pixel(4, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
+	elif tiltHeading > 225 and tiltHeading <= 270:
+		pixels.set_pixel(5, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
+	elif tiltHeading > 270 and tiltHeading <= 315:
+		pixels.set_pixel(6, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
+	elif tiltHeading > 315 and tiltHeading <= 360:
+		pixels.set_pixel(7, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
+	else:
+		print("Wtf")
+	
 	pixels.show()
 	time.sleep(0.1)
 	pixels.clear()
+
