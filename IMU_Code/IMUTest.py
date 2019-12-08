@@ -129,12 +129,13 @@ if __name__ == "__main__":
     # Calibrating the compass isnt mandatory, however a calibrated 
     # compass will result in a more accurate heading value.
 
-    magXmin = 0
-    magYmin = 0
-    magZmin = 0
-    magXmax = 0
-    magYmax = 0
-    magZmax = 0
+    magXmin =  1630
+    magYmin =  -2875
+    magZmin =  -1000
+    magXmax =  3995
+    magYmax =  -554
+    magZmax =  1415
+
 
     #Kalman filter variables
     Q_angle = 0.02
@@ -186,8 +187,8 @@ if __name__ == "__main__":
     IMU.detectIMU()     #Detect if BerryIMUv1 or BerryIMUv2 is connected.
     IMU.initIMU()       #Initialise the accelerometer, gyroscope and compass
     
-    magXmin, magXmax, magYmin, magYmax, magZmin, magZmax = calibrate(IMU)
-    print magXmin, magXmax, magYmin, magYmax, magZmin, magZmax
+    #magXmin, magXmax, magYmin, magYmax, magZmin, magZmax = calibrate(IMU)
+    #print magXmin, magXmax, magYmin, magYmax, magZmin, magZmax
 
     while(1):
 
@@ -395,12 +396,12 @@ if __name__ == "__main__":
         if 0:			#Change to '0' to stop  showing the angles from the complementary filter
             print ("\t# CFangleX Angle %5.2f   CFangleY Angle %5.2f #" % (CFangleX,CFangleY)),
 
-        if 0:			#Change to '0' to stop  showing the heading
+        if 1:			#Change to '0' to stop  showing the heading
             print ("\t# HEADING %5.2f  tiltCompensatedHeading %5.2f #" % (heading,tiltCompensatedHeading)),
 
         if 0:			#Change to '0' to stop  showing the angles from the Kalman filter
             print ("# kalmanX %5.2f   kalmanY %5.2f #" % (kalmanX,kalmanY)),
-        if 1:
+        if 0:
             print ("#MAGX %5.2f     #MAGY %5.2f     #MAGZ %5.2f     #MAGXCOMP %5.2f     #MAGYCOMP %5.2f" % (MAGx, MAGy, MAGz, magXcomp, magYcomp)),
 
         #print a new line
