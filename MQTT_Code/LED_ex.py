@@ -40,30 +40,46 @@ def one_at_a_time(pixels, wait=0.9,color=(255,0,0)):
         if wait > 0:
             time.sleep(wait)
 
+
+    # msg = str(client_id) + str(lighting[2][1]) + str(lighting[2][2]) + str(lighting[1][2])\
+    #                                  0                     1                     2
+    # + str(lighting[0][2]) + str(lighting[0][1])+str(lighting[0][0])\
+    #          3                    4                     5
+    # + str(lighting[1][0]) +str(lighting[2][0])+"#"
+    #          6                   7
+
+#helper for get_rotation
+def rotateClockwise90(msg):
+    print("clockwise 90deg")
+    rotmsg = msg[2]+msg[3]+msg[4]+msg[5]+msg[6]+msg[7]+msg[0]+msg[1]
+    return rotmsg
+
+#helper for get_rotation
+def rotateCounterClockwise90(msg):
+    print("counterclockwise 90deg")
+    rotmsg = msg[6]+msg[7]+msg[0]+msg[1]+msg[2]+msg[3]+msg[4]+msg[5]
+    return rotmsg
+
+#helper for get_rotation
+def rotate180(lightMsg):
+    print("rotated 180deg")
+    rotmsg = msg[4]+msg[5]+msg[6]+msg[7]+msg[0]+msg[1]+msg[2]+msg[3]
+    return rotmsg
+
+
 # This is only used by the enact_lights_*_tilt functions and client_BT_and_IMU.py.
 # Given tiltHeading and a string lightMsg, return a rotated lightMsg.
 def get_rotation(tiltHeading, lightMsg):
     rot_lm = lightMsg
-    if tiltHeading > 0 and tiltHeading <= 45:
-        # CHANGE THIS
-        pixels.set_pixel(0, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
-    elif tiltHeading > 45 and tiltHeading <= 90:
-        pixels.set_pixel(1, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
-    elif tiltHeading > 90 and tiltHeading <= 135:
-        pixels.set_pixel(2, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
-    elif tiltHeading > 135 and tiltHeading <= 180:
-        pixels.set_pixel(3, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
-    elif tiltHeading > 180 and tiltHeading <= 225:
-        pixels.set_pixel(4, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
-    elif tiltHeading > 225 and tiltHeading <= 270:
-        pixels.set_pixel(5, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
-    elif tiltHeading > 270 and tiltHeading <= 315:
-        pixels.set_pixel(6, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
-    elif tiltHeading > 315 and tiltHeading <= 360:
-        pixels.set_pixel(7, Adafruit_WS2801.RGB_to_color( 255, 0, 0))
+    if tiltHeading > 45 and tiltHeading <= 135:
+        rot_lm = rotateClockwise90(lightMsg)
+    elif tiltHeading > 135 and tiltHeading <= 225:
+        rot_lm = rotate180(lightMsg)
+    elif tiltHeading > 225 and tiltHeading <= 315:
+        rot_lm = rotateCounterClockwise90(lightMsg)
     else:
+        print("no change")
         # Don't do anything
-        return rot_lm
     return rot_lm
 
 def enact_lights_basic(pixels, data, my_id):
@@ -106,7 +122,7 @@ def enact_lights_with_color(pixels, data, my_id):
                 r1=color[0] * MAX_INTENSITY/255;
                 g1=color[1] * MAX_INTENSITY/255;
                 b1=color[2] * MAX_INTENSITY/255;
-                pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(r1,g1,b1 )) #preset to blue
+                pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(r1,g1,b1 )) 
             pixels.show()
             # time.sleep(0.2)
 
@@ -172,7 +188,7 @@ def enact_lights_with_color_tilt(pixels, data, tiltHeading, my_id):
                 r1=color[0] * MAX_INTENSITY/255;
                 g1=color[1] * MAX_INTENSITY/255;
                 b1=color[2] * MAX_INTENSITY/255;
-                pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(r1,g1,b1 )) #preset to blue
+                pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(r1,g1,b1 )) 
             pixels.show()
             # Return UNROTATED light_msg. 
             return light_msg

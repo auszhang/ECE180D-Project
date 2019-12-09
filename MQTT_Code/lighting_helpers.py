@@ -112,8 +112,8 @@ ALL_OFF = [[0,0,0],
           [0,0,0]]
 
 ONE_ON = [[1,0,0],
-          [0,0,0],
-          [0,0,1]]
+          [1,0,0],
+          [1,1,1]]
 
 #THREE CAP STUFF!!!!!!!!!!!
 #BOTTOM RIGHT MISSING
