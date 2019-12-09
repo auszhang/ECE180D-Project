@@ -58,6 +58,17 @@ def on_message(client, userdata, msg):
 		print(msg.topic + " " + str(statement))
 		# Get IMU reading
 		tiltHeading = Compass.readCompass(Compass.IMU)
+		tiltHeading = Compass.readCompass(Compass.IMU)
+		tiltHeading = Compass.readCompass(Compass.IMU)
+		tiltHeading = Compass.readCompass(Compass.IMU)
+		tiltHeading = Compass.readCompass(Compass.IMU)
+		tiltHeading = Compass.readCompass(Compass.IMU)
+		tiltHeading = Compass.readCompass(Compass.IMU)
+		tiltHeading = Compass.readCompass(Compass.IMU)
+		tiltHeading = Compass.readCompass(Compass.IMU)
+		tiltHeading = Compass.readCompass(Compass.IMU)
+		tiltHeading = Compass.readCompass(Compass.IMU)
+		tiltHeading = Compass.readCompass(Compass.IMU)
 		print(tiltHeading)
 		# Call corresponding lighting functions.
 		if (str(statement) == "Mode 1"):

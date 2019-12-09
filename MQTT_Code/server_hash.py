@@ -61,7 +61,7 @@ client.connect(MQTT_SERVER, 1883, 60)
 #client.loop_forever()
 client.loop_start()
 while True:
-    time.sleep(3)
+    time.sleep(2)
     if len(rec_client_strings) >= MIN_CLIENTS:
         client_data = parse_from_strings_hash(rec_client_strings)
         print(client_data)
