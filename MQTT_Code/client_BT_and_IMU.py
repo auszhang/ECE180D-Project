@@ -75,9 +75,10 @@ while True:
 	client_sock, client_info = server_sock.accept()
 	print("Accepted connection from ", client_info)
     
-	if not MY_CURRENT_LIGHTING:
+	if len(MY_CURRENT_LIGHTING) == 8:
+		print(MY_CURRENT_LIGHTING)
 		tiltHeading = Compass.readCompass(Compass.IMU)
-		if(("b" in statement) or ("d" in statement)):
+		if(("b" in MY_CURRENT_LIGHTING) or ("d" in MY_CURRENT_LIGHTING)):
 			LED.parsed_color_tilt(pixels,MY_CURRENT_LIGHTING,tiltHeading)
 		else:
 			LED.parsed_basic_tilt(pixels,MY_CURRENT_LIGHTING,tiltHeading)
