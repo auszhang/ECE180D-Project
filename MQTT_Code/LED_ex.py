@@ -61,8 +61,8 @@ def rotateCounterClockwise90(msg):
     return rotmsg
 
 #helper for get_rotation
-def rotate180(lightMsg):
-    print("rotated 180deg")
+def rotate180(msg):
+    print("rotated 180deg")    
     rotmsg = msg[4]+msg[5]+msg[6]+msg[7]+msg[0]+msg[1]+msg[2]+msg[3]
     return rotmsg
 
@@ -70,13 +70,17 @@ def rotate180(lightMsg):
 # This is only used by the enact_lights_*_tilt functions and client_BT_and_IMU.py.
 # Given tiltHeading and a string lightMsg, return a rotated lightMsg.
 def get_rotation(tiltHeading, lightMsg):
+    #between 35 and 125, no chnge
+    #between 125 and 215, rotateClockwise90
+    #between 215 and 305, rotate180
+    #between 305 and 35, rotateCounterClockwise
     rot_lm = lightMsg
-    if tiltHeading > 45 and tiltHeading <= 135:
-        rot_lm = rotateClockwise90(lightMsg)
-    elif tiltHeading > 135 and tiltHeading <= 225:
-        rot_lm = rotate180(lightMsg)
-    elif tiltHeading > 225 and tiltHeading <= 315:
+    if tiltHeading > 125 and tiltHeading <= 215:
         rot_lm = rotateCounterClockwise90(lightMsg)
+    elif tiltHeading > 215 and tiltHeading <= 305:
+        rot_lm = rotate180(lightMsg)
+    elif tiltHeading > 305 or tiltHeading <= 35:
+        rot_lm = rotateClockwise90(lightMsg)
     else:
         print("no change")
         # Don't do anything
