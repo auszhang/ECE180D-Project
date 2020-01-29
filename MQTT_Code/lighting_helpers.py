@@ -289,7 +289,6 @@ UL_missing_cycle1.append(cap_DL)
 UL_missing_cycle1.append(cap_DR)
 
 def tell_lighting(client_id, lighting): 
-    #currently not accounting for color assignments
     msg = str(client_id) + str(lighting[2][1]) + str(lighting[2][2]) + str(lighting[1][2])\
     + str(lighting[0][2]) + str(lighting[0][1])+str(lighting[0][0])\
     + str(lighting[1][0]) +str(lighting[2][0])+"#"
