@@ -14,7 +14,8 @@ MIN_CLIENTS = 2 #Change to 4
 game_grid = None
 potato_row = -1
 potato_col = -1
-start1 = False
+game_start = False
+client_to_notify = ""
 
 def on_publish(client,userdata,result):
 	print("LED sequence sent")
@@ -65,9 +66,9 @@ while True:
         client_data = parse_from_strings_hash(rec_client_strings)
         print(client_data)
         game_grid, _ = localize_all(client_data)
-        if not start1:
+        if not game_start:
             # Initialize the game
-            start1 = True
+            game_start = True
             pass_msg = string(game_grid[0][0]) + ";RECEIVE"
             potato_row = 0
             potato_col = 0
