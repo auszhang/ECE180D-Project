@@ -8,12 +8,13 @@ MQTT_SERVER = "192.168.43.130"
 send_path = "topic/serene"
 listen_path = "topic/init_loc"
 rec_client_strings = {}
-MIN_CLIENTS = 1
+MIN_CLIENTS = 1 #Change to 4
 
 # Variables for tracking game state
 game_grid = None
 potato_row = -1
 potato_col = -1
+start = False
 
 def on_publish(client,userdata,result):
 	print("LED sequence sent")
@@ -39,6 +40,12 @@ def on_message(client, userdata, msg):
             pass_msg = string(game_grid[potato_row][potato_col]) + ";RECEIVE"
             # Send updated potato position to clients
             client.publish(send_path, pass_msg)
+        else:
+            # Notify all clients that pass failed
+            data = parse_from_string(statement)
+            client_id = data[0]
+            fail_msg = client_id+";FAILED_TO_PASS"
+            client.publish(send_path, fail_msg)
     else:
         split_string = statement.split(";")
         # Map statement to client ID. This overwrites any previous statements from same client.
@@ -57,3 +64,11 @@ while True:
         client_data = parse_from_strings_hash(rec_client_strings)
         print(client_data)
         game_grid, _ = localize_all(client_data)
+        if !start:
+            # Initialize the game
+            start = True
+            pass_msg = string(game_grid[0][0]) + ";RECEIVE"
+            potato_row = 0
+            potato_col = 0
+            client.publish(send_path,pass_msg)
+        
