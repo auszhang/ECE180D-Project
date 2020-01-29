@@ -37,7 +37,7 @@ def localize(data, grid, name_grid):
     row, col = pos_to_row_col(pos)
     
     # Check if invalid position
-    if row == -1 || col == -1:
+    if row == -1 or col == -1:
         return grid, name_grid, False
     
     if grid[row-1][col-1] != 0:
@@ -108,11 +108,11 @@ def parse_pass(statement, game_grid, potato_row, potato_col):
     c_row, c_col = find_client_in_grid(client_id, game_grid)
     
     # Invalid if client is not in the game
-    if c_row == -1 || c_col == -1:
+    if c_row == -1 or c_col == -1:
         return -1, -1, False
     
     # Invalid if client trying to pass does not have potato
-    if c_row != potato_row || c_col != potato_col:
+    if c_row != potato_row or c_col != potato_col:
         return -1, -1, False
     
     # Get position of receiver
@@ -123,7 +123,7 @@ def parse_pass(statement, game_grid, potato_row, potato_col):
         return -1, -1, False
     
     # Invalid if trying to pass to self
-    if new_p_row == potato_row && new_p_col == potato_col:
+    if new_p_row == potato_row and new_p_col == potato_col:
         return -1, -1, False
     
     return new_p_row, new_p_col, True

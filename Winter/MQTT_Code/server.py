@@ -8,13 +8,13 @@ MQTT_SERVER = "192.168.43.130"
 send_path = "topic/serene"
 listen_path = "topic/init_loc"
 rec_client_strings = {}
-MIN_CLIENTS = 1 #Change to 4
+MIN_CLIENTS = 2 #Change to 4
 
 # Variables for tracking game state
 game_grid = None
 potato_row = -1
 potato_col = -1
-start = False
+start1 = False
 
 def on_publish(client,userdata,result):
 	print("LED sequence sent")
@@ -60,15 +60,21 @@ client.connect(MQTT_SERVER, 1883, 60)
 client.loop_start()
 while True:
     time.sleep(2)
+    
     if len(rec_client_strings) >= MIN_CLIENTS:
         client_data = parse_from_strings_hash(rec_client_strings)
         print(client_data)
         game_grid, _ = localize_all(client_data)
-        if !start:
+        if not start1:
             # Initialize the game
-            start = True
+            start1 = True
             pass_msg = string(game_grid[0][0]) + ";RECEIVE"
             potato_row = 0
             potato_col = 0
             client.publish(send_path,pass_msg)
+            client.publish(send_path,pass_msg)
+            client.publish(send_path,pass_msg)
+            client.publish(send_path,pass_msg)
+            client.publish(send_path,pass_msg)
+            
         
