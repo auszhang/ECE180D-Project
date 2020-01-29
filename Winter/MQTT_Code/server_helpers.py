@@ -122,5 +122,9 @@ def parse_pass(statement, game_grid, potato_row, potato_col):
     if game_grid[new_p_row][new_p_col] == 0:
         return -1, -1, False
     
+    # Invalid if trying to pass to self
+    if new_p_row == potato_row && new_p_col == potato_col:
+        return -1, -1, False
+    
     return new_p_row, new_p_col, True
     
