@@ -23,7 +23,7 @@ game_start = False
 client_to_notify = ""
 
 def on_publish(client,userdata,result):
-	print("published")
+	#print("published")
 	pass
 
 def on_connect(client, userdata, flags, rc):
@@ -34,17 +34,25 @@ def on_message(client, userdata, msg):
     byte_statement = msg.payload
     statement = byte_statement.decode("utf-8")
     print(msg.topic + " " + str(statement))
+    global potato_row
+    global potato_col
+    global failed_pass
+    global fail_msg
+    global game_grid
     if "DIED" in statement:
         dead_client = statement[:-4]
         if dead_client in rec_client_strings:
             del rec_client_strings[dead_client]
     elif "PASS_POTATO" in statement:
+        print("Made it here")
         new_row, new_col, valid = parse_pass(statement, game_grid, potato_row, potato_col)
         if valid:
+            print("valid")
             failed_pass = False
             potato_row = new_row
             potato_col = new_col
         else:
+            print("not valid")
             failed_pass = True
             # Set failure message
             data = parse_from_string(statement)
@@ -64,12 +72,10 @@ client.connect(MQTT_SERVER, 1883, 60)
 client.loop_start()
 while True:
     time.sleep(2)
-    print(rec_client_strings)
-    print(game_grid)
-    # print(name_grid)
+    #print(rec_client_strings)
+    #print(game_grid)
     if len(rec_client_strings) >= MIN_CLIENTS:
         client_data = parse_from_strings_hash(rec_client_strings)
-        print(client_data)
         game_grid, name_grid = localize_all(client_data)
         if not game_start:
             # Initialize the game
@@ -84,6 +90,7 @@ while True:
         prev_col = potato_col
     else:
         pass_msg = ""
+    print(pass_msg)
     client.publish(send_path,pass_msg)
             
         

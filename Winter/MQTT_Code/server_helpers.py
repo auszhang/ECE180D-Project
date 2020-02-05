@@ -73,7 +73,7 @@ def find_client_in_grid(client_id, grid):
         return 0, 1
     elif grid[1][0] == client_id:
         return 1, 0
-    elif grid[1][1] == cliend_id:
+    elif grid[1][1] == client_id:
         return 1, 1
     return -1, -1
 
@@ -103,7 +103,7 @@ def get_pos_from_dir(row, col, direction):
 # Return new position of potato and whether move is valid
 def parse_pass(statement, game_grid, potato_row, potato_col):
     data = parse_from_string(statement)
-    client_id = int(data[0])
+    client_id = data[0]
     direction = data[2]
     c_row, c_col = find_client_in_grid(client_id, game_grid)
     
