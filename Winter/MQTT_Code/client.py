@@ -73,6 +73,7 @@ while True:
 	#print("Accepted connection from ", client_info)
     
 	try:
+		send_data =  ";"
 		if not INITIALIZED:
 			# Get user data from commandline
 			my_name = raw_input("Enter your name: ")
@@ -87,12 +88,10 @@ while True:
 			client.will_set(send_path,str.encode(LAST_WILL),0,False)
 			client.connect(MQTT_SERVER, 1883, 60)
 			client.loop_start()
-			# Send payload with client location, name, and id
-			send_data = ";"
+			# Initial payload with client location, name, and id
 			send_data = send_data.join([my_pos,my_name,MY_ID])
-			publish.single(send_path, send_data, hostname = MQTT_SERVER)
 			INITIALIZED = True
-		if HAVE_POTATO:
+		elif HAVE_POTATO:
 			print("Received potato!")
 			pass_pos = raw_input("Enter which direction to pass (R, L, or A): ")
 			position = ""
@@ -102,11 +101,12 @@ while True:
 				position = "LEFT"
 			elif pass_pos == "A":
 				position = "ACROSS"
-			pass_data = ";"
-			pass_data = pass_data.join([MY_ID,"PASS_POTATO",position])
-			publish.single(send_path, pass_data, hostname = MQTT_SERVER)
+			# Passing payload with client id, keyword, and position to pass to
+			send_data = send_data.join([MY_ID,"PASS_POTATO",position])
 			print("Passing potato!")
 			HAVE_POTATO = False
+		# Send payload
+		publish.single(send_path, send_data, hostname = MQTT_SERVER)
 		#data = client_sock.recv(1024)
 		#if len(data) == 0:
 			#break
