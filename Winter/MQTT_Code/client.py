@@ -16,7 +16,7 @@ import LED_ex as LED
 
 sys.path.insert(1, '../IMU_Code')
 
-import Compass
+#import Compass
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(17, GPIO.OUT)
@@ -41,6 +41,10 @@ MY_ID = ""
 LAST_WILL = ""
 INITIALIZED = False
 MY_CURRENT_LIGHTING = ""
+# GAME VARIABLES
+HAVE_POTATO = False
+#HAVE_POTATO_STRING = ""
+
 
 # Configure the count of pixels:
 PIXEL_COUNT = 8
@@ -50,7 +54,8 @@ SPI_DEVICE = 0
 pixels = Adafruit_WS2801.WS2801Pixels(PIXEL_COUNT, spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE), gpio=GPIO)
 
 # Game variables
-HAVE_POTATO = False
+# HAVE_POTATO = False
+# HAVE_POTATO_STRING = ""
 
 def on_connect(client, userdata, flags, rc):
 		print("Connected: result code " + str(rc))
@@ -61,24 +66,26 @@ def on_message(client, userdata, msg):
 		statement = str(payload)
 		print("RPi received")
 		print(msg.topic + " " + statement)
+		print(statement.split(";"))
 		if "RECEIVE" or "FAILED_TO_PASS" in statement:
 			data = statement.split(";")
 			if MY_ID == str(data[0]):
-				HAVE_POTATO = True
+				print("RECOGNIZED MY ID")
+				global HAVE_POTATO
+				HAVE_POTATO  = True
 
 while True:
 	#print("Waiting for connection on RFCOMM channel %d")% port
 
 	#client_sock, client_info = server_sock.accept()
 	#print("Accepted connection from ", client_info)
-    
 	try:
 		send_data =  ";"
 		if not INITIALIZED:
 			# Get user data from commandline
 			my_name = raw_input("Enter your name: ")
-			my_id = str(hash(my_name))
-			print("Your id is: " + my_id)
+			MY_ID = str(hash(my_name))
+			print("Your id is: " + MY_ID)
 			my_pos = raw_input("Enter your position (number between 1 and 4): ")
 			# Initialize MQTT
 			client = mqtt.Client()
@@ -90,8 +97,9 @@ while True:
 			client.loop_start()
 			# Initial payload with client location, name, and id
 			send_data = send_data.join([my_pos,my_name,MY_ID])
+			publish.single(send_path, send_data, hostname = MQTT_SERVER)
 			INITIALIZED = True
-		elif HAVE_POTATO:
+		if HAVE_POTATO:
 			print("Received potato!")
 			pass_pos = raw_input("Enter which direction to pass (R, L, or A): ")
 			position = ""
@@ -103,10 +111,9 @@ while True:
 				position = "ACROSS"
 			# Passing payload with client id, keyword, and position to pass to
 			send_data = send_data.join([MY_ID,"PASS_POTATO",position])
+			publish.single(send_path, send_data, hostname = MQTT_SERVER)
 			print("Passing potato!")
 			HAVE_POTATO = False
-		# Send payload
-		publish.single(send_path, send_data, hostname = MQTT_SERVER)
 		#data = client_sock.recv(1024)
 		#if len(data) == 0:
 			#break
