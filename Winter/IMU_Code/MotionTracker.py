@@ -28,10 +28,7 @@ MAG_LPF_FACTOR = 0.4 	# Low pass filter constant magnetometer
 ACC_LPF_FACTOR = 0.4 	# Low pass filter constant for accelerometer
 ACC_MEDIANTABLESIZE = 9    	# Median filter table size for accelerometer. Higher = smoother but a longer delay
 MAG_MEDIANTABLESIZE = 9    	# Median filter table size for magnetometer. Higher = smoother but a longer delay
-################# Compass Calibration values ############
-# Use calibrateBerryIMU.py to get calibration values 
-# Calibrating the compass isnt mandatory, however a calibrated 
-# compass will result in a more accurate heading value.
+
 #Kalman filter variables
 Q_angle = 0.02
 Q_gyro = 0.0015
@@ -46,17 +43,17 @@ YP_00 = 0.0
 YP_01 = 0.0
 YP_10 = 0.0
 YP_11 = 0.0
-#KFangleX = 0.0
-#KFangleY = 0.0
-#gyroXangle = 0.0
-#gyroYangle = 0.0
-#gyroZangle = 0.0
-#CFangleX = 0.0
-#CFangleY = 0.0
-#CFangleXFiltered = 0.0
-#CFangleYFiltered = 0.0
-#kalmanX = 0.0
-#kalmanY = 0.0
+KFangleX = 0.0
+KFangleY = 0.0
+gyroXangle = 0.0
+gyroYangle = 0.0
+gyroZangle = 0.0
+CFangleX = 0.0
+CFangleY = 0.0
+CFangleXFiltered = 0.0
+CFangleYFiltered = 0.0
+kalmanX = 0.0
+kalmanY = 0.0
 oldXMagRawValue = 0
 oldYMagRawValue = 0
 oldZMagRawValue = 0
@@ -64,6 +61,7 @@ oldXAccRawValue = 0
 oldYAccRawValue = 0
 oldZAccRawValue = 0
 a = datetime.datetime.now()
+
 #Setup the tables for the median filter. Fill them all with '1' so we dont get devide by zero error 
 acc_medianTable1X = [1] * ACC_MEDIANTABLESIZE
 acc_medianTable1Y = [1] * ACC_MEDIANTABLESIZE
@@ -152,7 +150,7 @@ def kalmanFilterX ( accAngle, gyroRate, DT):
 	
 	return KFangleX
 
-def readCompass(IMU):
+def readIMU(IMU):
 
     global magXmin
     global magYmin
@@ -185,6 +183,18 @@ def readCompass(IMU):
     global YP_10
     global YP_11
 
+    global KFangleX 
+    global KFangleY 
+    global gyroXangle 
+    global gyroYangle 
+    global gyroZangle 
+    global CFangleX  
+    global CFangleY 
+    global CFangleXFiltered 
+    global CFangleYFiltered 
+    global kalmanX 
+    global kalmanY 
+
     global oldXMagRawValue
     global oldYMagRawValue
     global oldZMagRawValue
@@ -211,9 +221,9 @@ def readCompass(IMU):
     ACCx = IMU.readACCx()
     ACCy = IMU.readACCy()
     ACCz = IMU.readACCz()
-    #GYRx = IMU.readGYRx()
-    #GYRy = IMU.readGYRy()
-    #GYRz = IMU.readGYRz()
+    GYRx = IMU.readGYRx()
+    GYRy = IMU.readGYRy()
+    GYRz = IMU.readGYRz()
     MAGx = IMU.readMAGx()
     MAGy = IMU.readMAGy()
     MAGz = IMU.readMAGz()
@@ -227,9 +237,6 @@ def readCompass(IMU):
     b = datetime.datetime.now() - a
     a = datetime.datetime.now()
     LP = b.microseconds/(1000000*1.0)
-    #print "Loop Time | %5.2f|" % ( LP ),
-
-
 
     ############################################### 
     #### Apply low pass filter ####
@@ -311,15 +318,15 @@ def readCompass(IMU):
 
 
     #Convert Gyro raw to degrees per second
-    #rate_gyr_x =  GYRx * G_GAIN
-    #rate_gyr_y =  GYRy * G_GAIN
-    #rate_gyr_z =  GYRz * G_GAIN
+    rate_gyr_x =  GYRx * G_GAIN
+    rate_gyr_y =  GYRy * G_GAIN
+    rate_gyr_z =  GYRz * G_GAIN
 
 
     #Calculate the angles from the gyro. 
-    #gyroXangle+=rate_gyr_x*LP
-    #gyroYangle+=rate_gyr_y*LP
-    #gyroZangle+=rate_gyr_z*LP
+    gyroXangle+=rate_gyr_x*LP
+    gyroYangle+=rate_gyr_y*LP
+    gyroZangle+=rate_gyr_z*LP
 
     #Convert Accelerometer values to degrees
 
@@ -344,12 +351,12 @@ def readCompass(IMU):
 
 
     #Complementary filter used to combine the accelerometer and gyro values.
-    #CFangleX=AA*(CFangleX+rate_gyr_x*LP) +(1 - AA) * AccXangle
-    #CFangleY=AA*(CFangleY+rate_gyr_y*LP) +(1 - AA) * AccYangle
+    CFangleX=AA*(CFangleX+rate_gyr_x*LP) +(1 - AA) * AccXangle
+    CFangleY=AA*(CFangleY+rate_gyr_y*LP) +(1 - AA) * AccYangle
 
     #Kalman filter used to combine the accelerometer and gyro values.
-    #kalmanY = kalmanFilterY(AccYangle, rate_gyr_y,LP)
-    #kalmanX = kalmanFilterX(AccXangle, rate_gyr_x,LP)
+    kalmanY = kalmanFilterY(AccYangle, rate_gyr_y,LP)
+    kalmanX = kalmanFilterX(AccXangle, rate_gyr_x,LP)
 
     if IMU_UPSIDE_DOWN:
         MAGy = -MAGy      #If IMU is upside down, this is needed to get correct heading.
@@ -392,8 +399,6 @@ def readCompass(IMU):
         magYcomp = MAGx*math.sin(roll)*math.sin(pitch)+MAGy*math.cos(roll)+MAGz*math.sin(roll)*math.cos(pitch)   #LSM9DS1
 
 
-
-
     #Calculate tilt compensated heading
     tiltCompensatedHeading = 180 * math.atan2(magYcomp,magXcomp)/M_PI
 
@@ -402,28 +407,30 @@ def readCompass(IMU):
 
     ############################ END ##################################
 
-    if 0:			#Change to '0' to stop showing the angles from the accelerometer
-        print ("# ACCX Angle %5.2f ACCY Angle %5.2f #  " % (AccXangle, AccYangle)),
+    print(str(ACCx) + ", " + str(ACCy) + ", " + str(ACCz) + ", " + str(gyroXangle) + ", " + str(gyroYangle) + ", " + str(gyroZangle) + ", " + str(CFangleX) + ", " + str(CFangleY))
 
-    if 0:			#Change to '0' to stop  showing the angles from the gyro
-        print ("\t# GRYX Angle %5.2f  GYRY Angle %5.2f  GYRZ Angle %5.2f # " % (gyroXangle,gyroYangle,gyroZangle)),
 
-    if 0:			#Change to '0' to stop  showing the angles from the complementary filter
-        print ("\t# CFangleX Angle %5.2f   CFangleY Angle %5.2f #" % (CFangleX,CFangleY)),
-
-    if 0:			#Change to '0' to stop  showing the heading
-        print ("\t# HEADING %5.2f  tiltCompensatedHeading %5.2f #" % (heading,tiltCompensatedHeading)),
-
-    if 0:			#Change to '0' to stop  showing the angles from the Kalman filter
-        print ("# kalmanX %5.2f   kalmanY %5.2f #" % (kalmanX,kalmanY)),
-    
-    if 0:
-        print ("#MAGX %5.2f     #MAGY %5.2f     #MAGZ %5.2f     #MAGXCOMP %5.2f     #MAGYCOMP %5.2f" % (MAGx, MAGy, MAGz, magXcomp, magYcomp)),
+    #if 1:			#Change to '0' to stop showing the angles from the accelerometer
+    #    print ("# ACCX Angle %5.2f \t\t ACCY Angle %5.2f #  " % (AccXangle, AccYangle)),
+    #
+    #if 1:			#Change to '0' to stop  showing the angles from the gyro
+    #    print ("\t\t# GRYX Angle %5.2f \t\t GYRY Angle %5.2f \t\t GYRZ Angle %5.2f # " % (gyroXangle,gyroYangle,gyroZangle)),
+    #
+    #if 1:			#Change to '0' to stop  showing the angles from the complementary filter
+    #    print ("\t\t# CFangleX Angle %5.2f \t\t  CFangleY Angle %5.2f #" % (CFangleX,CFangleY)),
+    #
+    #if 0:			#Change to '0' to stop  showing the heading
+    #    print ("\t\t# HEADING %5.2f \t\t tiltCompensatedHeading %5.2f #" % (heading,tiltCompensatedHeading)),
+    #
+    #if 1:			#Change to '0' to stop  showing the angles from the Kalman filter
+    #    print ("\t\t# kalmanX %5.2f \t\t  kalmanY %5.2f #" % (kalmanX,kalmanY)),
+    #
+    #if 0:
+    #    print ("#MAGX %5.2f     #MAGY %5.2f     #MAGZ %5.2f     #MAGXCOMP %5.2f     #MAGYCOMP %5.2f" % (MAGx, MAGy, MAGz, magXcomp, magYcomp)),
 
     #print a new line
     #print "" 
 
-    return tiltCompensatedHeading 
-
+    return 0
 
 
