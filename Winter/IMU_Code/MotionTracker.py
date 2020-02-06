@@ -26,7 +26,7 @@ G_GAIN = 0.070  	# [deg/s/LSB]  If you change the dps for gyro, you need to upda
 AA =  0.40      	# Complementary filter constant
 MAG_LPF_FACTOR = 0.4 	# Low pass filter constant magnetometer
 ACC_LPF_FACTOR = 0.4 	# Low pass filter constant for accelerometer
-ACC_MEDIANTABLESIZE = 9    	# Median filter table size for accelerometer. Higher = smoother but a longer delay
+ACC_MEDIANTABLESIZE = 9    # Median filter table size for accelerometer. Higher = smoother but a longer delay
 MAG_MEDIANTABLESIZE = 9    	# Median filter table size for magnetometer. Higher = smoother but a longer delay
 
 #Kalman filter variables
@@ -407,8 +407,8 @@ def readIMU(IMU):
 
     ############################ END ##################################
 
-    print(str(ACCx) + ", " + str(ACCy) + ", " + str(ACCz) + ", " + str(gyroXangle) + ", " + str(gyroYangle) + ", " + str(gyroZangle) + ", " + str(CFangleX) + ", " + str(CFangleY))
-
+    #print(str(ACCx) + ", " + str(ACCy) + ", " + str(ACCz) + ", " + str(gyroXangle) + ", " + str(gyroYangle) + ", " + str(gyroZangle) + ", " + str(CFangleX) + ", " + str(CFangleY))
+    outputarray = [ACCx, ACCy, ACCz, CFangleX, CFangleY]
 
     #if 1:			#Change to '0' to stop showing the angles from the accelerometer
     #    print ("# ACCX Angle %5.2f \t\t ACCY Angle %5.2f #  " % (AccXangle, AccYangle)),
@@ -431,6 +431,6 @@ def readIMU(IMU):
     #print a new line
     #print "" 
 
-    return 0
+    return outputarray
 
 
