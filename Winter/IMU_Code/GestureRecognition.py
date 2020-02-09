@@ -1,6 +1,6 @@
 import MotionTracker
 
-while 1:
+def read():
     output = MotionTracker.readIMU(MotionTracker.IMU)
     ACCx = output[0]
     ACCy = output[1]
@@ -8,9 +8,10 @@ while 1:
     CFx = output[3]
     CFy = output[4]
 
-    if ACCx > 2500:
-        print("Across")
-    elif ACCz > 2000:
-        print("Right")
-    elif ACCy < -1000:
-        print("Left")
+    if ACCx > 2500:         #Across
+        return "Across"
+    elif ACCz > 2000:       #Left
+        return "Left"
+    elif ACCy < -1000:      #Right
+        return "Right"
+    
