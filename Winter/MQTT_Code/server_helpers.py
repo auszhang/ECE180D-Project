@@ -123,7 +123,7 @@ def parse_pass(statement, game_grid, potato_row, potato_col):
         return -1, -1, False
     
     # Invalid if no client at receiving position
-    if game_grid[new_p_row][new_p_col] == 0:
+    if game_grid[new_p_row][new_p_col] == "":
         return -1, -1, False
     
     # Invalid if trying to pass to self
