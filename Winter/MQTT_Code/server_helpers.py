@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 def parse_from_string(s):
     return s.split(";")
@@ -132,12 +133,37 @@ def parse_pass(statement, game_grid, potato_row, potato_col):
     
     return new_p_row, new_p_col, True
 
-# Given a client id and the game grid, remove player from the game.
-def remove_player(client_id,game_grid):
+# Given a client id, game grid, and potato position:
+# Remove player from the game.
+def remove_player(client_id,game_grid, potato_row, potato_col):
+    potato_lost = False
     for i in range(2):
         for j in range(2):
             if game_grid[i][j] == client_id:
                 game_grid[i][j] = ""
-                return game_grid
-    return game_grid
+                if i == potato_row and j == potato_col:
+                    potato_lost = True
+                return game_grid, potato_lost
+    return game_grid, potato_lost
+
+# Given grid of players, return random valid position
+def get_random_pos(game_grid):
+    attempts = 0
+    rrow = random.randint(0,1)
+    rcol = random.randint(0,1)
+    # Try to randomly generate a valid position
+    while game_grid[rrow][rcol] == "":
+        rrow = random.randint(0,1)
+        rcol = random.randint(0,1)
+        attempts += 1
+        if attempts > 10:
+            break
+    if game_grid[rrow][rcol] != "":
+        return rrow, rcol
+    # Find a valid position using linear search
+    for i in range(2):
+        for j in range(2):
+            if game_grid[i][j] != "":
+                return i,j
+    return -1,-1
     

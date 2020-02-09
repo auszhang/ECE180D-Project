@@ -39,11 +39,18 @@ def on_message(client, userdata, msg):
     global failed_pass
     global fail_msg
     global game_grid
+    global prev_row
+    global prev_col
     if "DIED" in statement:
         dead_client = statement[:-4]
         if dead_client in rec_client_strings:
             del rec_client_strings[dead_client]
-            game_grid = remove_player(dead_client,game_grid)
+            game_grid, potato_lost = remove_player(dead_client,game_grid, potato_row, potato_col)
+            if potato_lost:
+                failed_pass = False
+                potato_row, potato_col = get_random_pos(game_grid)
+                prev_row = -1
+                prev_col = -1
     elif "PASS_POTATO" in statement:
         print("Made it here")
         new_row, new_col, valid = parse_pass(statement, game_grid, potato_row, potato_col)
