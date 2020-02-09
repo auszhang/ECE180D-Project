@@ -33,29 +33,29 @@ def localize(data, grid, name_grid):
     # Parse data
     pos = int(data[0]) # pos is an integer 1, 2, 3, 4
     name = data[1]
-    client_id = int(data[2])
+    client_id = data[2]
     row, col = pos_to_row_col(pos)
     
     # Check if invalid position
     if row == -1 or col == -1:
         return grid, name_grid, False
     
-    if grid[row-1][col-1] != 0:
+    if grid[row][col] != "":
         # unsuccessful if another client is already in this position
         return grid, name_grid, False
-    elif (name_grid[row-1][col-1] != None) and (name_grid[row-1][col-1] != name):
+    elif (name_grid[row][col] != None) and (name_grid[row][col] != name):
         # unsuccessful if client's name doesn't match with name already in this position
         return grid, name_grid, False
     else:
         # set client to this position
-        grid[row-1][col-1] = client_id
-        name_grid[row-1][col-1] = name
+        grid[row][col] = client_id
+        name_grid[row][col] = name
     return grid, name_grid, True
 
 # Returns grid (client id to position) and name_grid (client name to position)
 def localize_all(data_array):
     # Initialize 2x2 grid
-    grid = np.zeros((2,2))
+    grid = [["",""],["",""]]
     name_grid = np.empty((2,2), dtype=object)
     to_place = []
     for data in data_array:
@@ -73,7 +73,7 @@ def find_client_in_grid(client_id, grid):
         return 0, 1
     elif grid[1][0] == client_id:
         return 1, 0
-    elif grid[1][1] == cliend_id:
+    elif grid[1][1] == client_id:
         return 1, 1
     return -1, -1
 
@@ -103,7 +103,7 @@ def get_pos_from_dir(row, col, direction):
 # Return new position of potato and whether move is valid
 def parse_pass(statement, game_grid, potato_row, potato_col):
     data = parse_from_string(statement)
-    client_id = int(data[0])
+    client_id = data[0]
     direction = data[2]
     c_row, c_col = find_client_in_grid(client_id, game_grid)
     

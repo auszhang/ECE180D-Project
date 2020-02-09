@@ -12,13 +12,18 @@ MIN_CLIENTS = 2 #Change to 4
 
 # Variables for tracking game state
 game_grid = None
+name_grid = None
 potato_row = -1
 potato_col = -1
+prev_row = -1
+prev_col = -1
+failed_pass = False
+fail_msg = ""
 game_start = False
 client_to_notify = ""
 
 def on_publish(client,userdata,result):
-	print("LED sequence sent")
+	#print("published")
 	pass
 
 def on_connect(client, userdata, flags, rc):
@@ -29,28 +34,34 @@ def on_message(client, userdata, msg):
     byte_statement = msg.payload
     statement = byte_statement.decode("utf-8")
     print(msg.topic + " " + str(statement))
+    global potato_row
+    global potato_col
+    global failed_pass
+    global fail_msg
+    global game_grid
     if "DIED" in statement:
         dead_client = statement[:-4]
         if dead_client in rec_client_strings:
             del rec_client_strings[dead_client]
     elif "PASS_POTATO" in statement:
+        print("Made it here")
         new_row, new_col, valid = parse_pass(statement, game_grid, potato_row, potato_col)
         if valid:
+            print("valid")
+            failed_pass = False
             potato_row = new_row
             potato_col = new_col
-            pass_msg = string(game_grid[potato_row][potato_col]) + ";RECEIVE"
-            # Send updated potato position to clients
-            client.publish(send_path, pass_msg)
         else:
-            # Notify all clients that pass failed
+            print("not valid")
+            failed_pass = True
+            # Set failure message
             data = parse_from_string(statement)
             client_id = data[0]
             fail_msg = client_id+";FAILED_TO_PASS"
-            client.publish(send_path, fail_msg)
     else:
         split_string = statement.split(";")
         # Map statement to client ID. This overwrites any previous statements from same client.
-        rec_client_strings[split_string[4]]=statement
+        rec_client_strings[split_string[2]]=statement
         time.sleep(2)
 
 client = mqtt.Client()
@@ -61,21 +72,25 @@ client.connect(MQTT_SERVER, 1883, 60)
 client.loop_start()
 while True:
     time.sleep(2)
-    
+    #print(rec_client_strings)
+    #print(game_grid)
     if len(rec_client_strings) >= MIN_CLIENTS:
         client_data = parse_from_strings_hash(rec_client_strings)
-        print(client_data)
-        game_grid, _ = localize_all(client_data)
+        game_grid, name_grid = localize_all(client_data)
         if not game_start:
             # Initialize the game
             game_start = True
-            pass_msg = string(game_grid[0][0]) + ";RECEIVE"
             potato_row = 0
             potato_col = 0
-            client.publish(send_path,pass_msg)
-            client.publish(send_path,pass_msg)
-            client.publish(send_path,pass_msg)
-            client.publish(send_path,pass_msg)
-            client.publish(send_path,pass_msg)
+    if failed_pass:
+        pass_msg = fail_msg
+    elif potato_row != prev_row or potato_col != prev_col:
+        pass_msg = str(game_grid[potato_row][potato_col]) + ";RECEIVE"
+        prev_row = potato_row
+        prev_col = potato_col
+    else:
+        pass_msg = ""
+    print(pass_msg)
+    client.publish(send_path,pass_msg)
             
         
