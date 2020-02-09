@@ -118,6 +118,10 @@ def parse_pass(statement, game_grid, potato_row, potato_col):
     # Get position of receiver
     new_p_row, new_p_col = get_pos_from_dir(c_row, c_col, direction)
     
+    # Invalid if invalid positions
+    if new_p_row == -1 or new_p_col == -1:
+        return -1, -1, False
+    
     # Invalid if no client at receiving position
     if game_grid[new_p_row][new_p_col] == 0:
         return -1, -1, False
@@ -127,4 +131,13 @@ def parse_pass(statement, game_grid, potato_row, potato_col):
         return -1, -1, False
     
     return new_p_row, new_p_col, True
+
+# Given a client id and the game grid, remove player from the game.
+def remove_player(client_id,game_grid):
+    for i in range(2):
+        for j in range(2):
+            if game_grid[i][j] == client_id:
+                game_grid[i][j] = ""
+                return game_grid
+    return game_grid
     

@@ -8,7 +8,7 @@ MQTT_SERVER = "192.168.43.130"
 send_path = "topic/serene"
 listen_path = "topic/init_loc"
 rec_client_strings = {}
-MIN_CLIENTS = 2 #Change to 4
+MIN_CLIENTS = 4 #Change to 4
 
 # Variables for tracking game state
 game_grid = None
@@ -43,6 +43,7 @@ def on_message(client, userdata, msg):
         dead_client = statement[:-4]
         if dead_client in rec_client_strings:
             del rec_client_strings[dead_client]
+            game_grid = remove_player(dead_client,game_grid)
     elif "PASS_POTATO" in statement:
         print("Made it here")
         new_row, new_col, valid = parse_pass(statement, game_grid, potato_row, potato_col)

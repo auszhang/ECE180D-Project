@@ -43,7 +43,6 @@ INITIALIZED = False
 MY_CURRENT_LIGHTING = ""
 # GAME VARIABLES
 HAVE_POTATO = False
-#HAVE_POTATO_STRING = ""
 
 
 # Configure the count of pixels:
@@ -64,13 +63,13 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
 		payload = msg.payload
 		statement = str(payload)
-		print("RPi received")
-		print(msg.topic + " " + statement)
-		print(statement.split(";"))
+		#print("RPi received")
+		#print(msg.topic + " " + statement)
+		#print(statement.split(";"))
 		if "RECEIVE" or "FAILED_TO_PASS" in statement:
 			data = statement.split(";")
 			if MY_ID == str(data[0]):
-				print("RECOGNIZED MY ID")
+				#print("RECOGNIZED MY ID")
 				global HAVE_POTATO
 				HAVE_POTATO  = True
 
@@ -103,11 +102,11 @@ while True:
 			print("Received potato!")
 			pass_pos = raw_input("Enter which direction to pass (R, L, or A): ")
 			position = ""
-			if pass_pos == "R":
+			if pass_pos == "R" or pass_pos == "r":
 				position = "RIGHT"
-			elif pass_pos == "L":
+			elif pass_pos == "L" or pass_pos == "l":
 				position = "LEFT"
-			elif pass_pos == "A":
+			elif pass_pos == "A" or pass_pos == "a":
 				position = "ACROSS"
 			# Passing payload with client id, keyword, and position to pass to
 			send_data = send_data.join([MY_ID,"PASS_POTATO",position])
