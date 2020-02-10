@@ -8,7 +8,7 @@ MQTT_SERVER = "192.168.43.130"
 send_path = "topic/serene"
 listen_path = "topic/init_loc"
 rec_client_strings = {}
-MIN_CLIENTS = 4 #Change to 4
+MIN_CLIENTS = 2 #Change to 4
 
 # Variables for tracking game state
 game_grid = None
@@ -70,7 +70,7 @@ def on_message(client, userdata, msg):
         split_string = statement.split(";")
         # Map statement to client ID. This overwrites any previous statements from same client.
         rec_client_strings[split_string[2]]=statement
-        time.sleep(2)
+        time.sleep(0.5)
 
 client = mqtt.Client()
 client.on_connect = on_connect
@@ -79,7 +79,7 @@ client.on_publish = on_publish
 client.connect(MQTT_SERVER, 1883, 60)
 client.loop_start()
 while True:
-    time.sleep(2)
+    time.sleep(0.5)
     #print(rec_client_strings)
     #print(game_grid)
     if len(rec_client_strings) >= MIN_CLIENTS:

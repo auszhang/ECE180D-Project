@@ -40,51 +40,19 @@ def one_at_a_time(pixels, wait=0.9,color=(255,0,0)):
         if wait > 0:
             time.sleep(wait)
 
+#NOTE: Cap rotation functionality was deleted
 
-    # msg = str(client_id) + str(lighting[2][1]) + str(lighting[2][2]) + str(lighting[1][2])\
-    #                                  0                     1                     2
-    # + str(lighting[0][2]) + str(lighting[0][1])+str(lighting[0][0])\
-    #          3                    4                     5
-    # + str(lighting[1][0]) +str(lighting[2][0])+"#"
-    #          6                   7
+def have_potato_lights(pixels, c1 = 20):
+    pixels.clear()
+    for j in range(PIXEL_COUNT):
+        pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(0,0, c1 )) #preset to blue
+    pixels.show()
 
-#helper for get_rotation
-def rotateClockwise90(msg):
-    print("clockwise 90deg")
-    rotmsg = msg[2]+msg[3]+msg[4]+msg[5]+msg[6]+msg[7]+msg[0]+msg[1]
-    return rotmsg
-
-#helper for get_rotation
-def rotateCounterClockwise90(msg):
-    print("counterclockwise 90deg")
-    rotmsg = msg[6]+msg[7]+msg[0]+msg[1]+msg[2]+msg[3]+msg[4]+msg[5]
-    return rotmsg
-
-#helper for get_rotation
-def rotate180(msg):
-    print("rotated 180deg")    
-    rotmsg = msg[4]+msg[5]+msg[6]+msg[7]+msg[0]+msg[1]+msg[2]+msg[3]
-    return rotmsg
-
-
-# This is only used by the enact_lights_*_tilt functions and client_BT_and_IMU.py.
-# Given tiltHeading and a string lightMsg, return a rotated lightMsg.
-def get_rotation(tiltHeading, lightMsg):
-    #between 35 and 125, no chnge
-    #between 125 and 215, rotateClockwise90
-    #between 215 and 305, rotate180
-    #between 305 and 35, rotateCounterClockwise
-    rot_lm = lightMsg
-    if tiltHeading > 125 and tiltHeading <= 215:
-        rot_lm = rotateCounterClockwise90(lightMsg)
-    elif tiltHeading > 215 and tiltHeading <= 305:
-        rot_lm = rotate180(lightMsg)
-    elif tiltHeading > 305 or tiltHeading <= 35:
-        rot_lm = rotateClockwise90(lightMsg)
-    else:
-        print("no change")
-        # Don't do anything
-    return rot_lm
+def no_potato_lights(pixels, c1 = 20):
+    pixels.clear()
+    for j in range(PIXEL_COUNT):
+        pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(0,c1, 0 )) #preset to green
+    pixels.show()
 
 def enact_lights_basic(pixels, data, my_id):
     pixels.clear()
