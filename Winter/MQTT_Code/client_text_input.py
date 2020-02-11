@@ -14,11 +14,9 @@ import Adafruit_WS2801
 import Adafruit_GPIO.SPI as SPI
 import LED_ex as LED
 
-#import IMU code
 sys.path.insert(1, '../IMU_Code')
-import GestureRecognition
 
-
+#import Compass
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(17, GPIO.OUT)
@@ -100,19 +98,9 @@ while True:
 			send_data = send_data.join([my_pos,my_name,MY_ID])
 			publish.single(send_path, send_data, hostname = MQTT_SERVER)
 			INITIALIZED = True
-			# LIGHTING SCHEME FOR NO POTATO
-			LED.no_potato_lights(pixels)
 		if HAVE_POTATO:
 			print("Received potato!")
-			# pass_pos = raw_input("Enter which direction to pass (R, L, or A): ")
-			
-			# LIGHTING SCHEME FOR WITH POTATO
-			LED.have_potato_lights(pixels)
-
-			pass_pos = GestureRecognition.read()
-			while pass_pos=="X":
-				pass_pos = GestureRecognition.read()
-
+			pass_pos = raw_input("Enter which direction to pass (R, L, or A): ")
 			position = ""
 			if pass_pos == "R" or pass_pos == "r":
 				position = "RIGHT"
@@ -120,15 +108,11 @@ while True:
 				position = "LEFT"
 			elif pass_pos == "A" or pass_pos == "a":
 				position = "ACROSS"
-			
 			# Passing payload with client id, keyword, and position to pass to
 			send_data = send_data.join([MY_ID,"PASS_POTATO",position])
 			publish.single(send_path, send_data, hostname = MQTT_SERVER)
 			print("Passing potato!")
-			# LIGHTING SCHEME FOR NO POTATO
-			LED.no_potato_lights(pixels)
 			HAVE_POTATO = False
-
 		#data = client_sock.recv(1024)
 		#if len(data) == 0:
 			#break
