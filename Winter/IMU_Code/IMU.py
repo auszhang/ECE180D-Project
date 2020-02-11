@@ -1,5 +1,10 @@
 import smbus
+import sys 
+
 bus = smbus.SMBus(1)
+
+sys.path.insert(1, "../IMU_Local")
+
 from LSM9DS0 import *
 from LSM9DS1 import *
 import time
