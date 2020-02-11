@@ -42,16 +42,46 @@ def one_at_a_time(pixels, wait=0.9,color=(255,0,0)):
 
 #NOTE: Cap rotation functionality was deleted
 
-def have_potato_lights(pixels, c1 = 20):
+def have_potato_lights(pixels):
     pixels.clear()
+    red = [254, 0, 0]
+    dark_orange = [255, 90, 0]
+    light_orange = [255, 154, 0]
+    yellow = [254, 206, 0]
     for j in range(PIXEL_COUNT):
-        pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(0,0, c1 )) #preset to blue
+        if j <2:
+            color = red
+        elif j < 4:
+            color = dark_orange
+        elif j < 6:
+            color = light_orange
+        else:
+            color = yellow
+        r1=color[0] * MAX_INTENSITY/255;
+        g1=color[1] * MAX_INTENSITY/255;
+        b1=color[2] * MAX_INTENSITY/255;
+        pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(r1,g1,b1 ))
     pixels.show()
 
 def no_potato_lights(pixels, c1 = 20):
     pixels.clear()
+    light_blue = [167, 214, 235]
+    mid_blue = [103, 170, 223]
+    dark_blue = [20, 91, 155]
+    purple = [128, 129, 184]
     for j in range(PIXEL_COUNT):
-        pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(0,c1, 0 )) #preset to green
+        if j < 2:
+            color = light_blue
+        elif j < 4:
+            color = mid_blue
+        elif j < 6:
+            color = dark_blue
+        else:
+            color = purple
+        r1=color[0] * MAX_INTENSITY/255;
+        g1=color[1] * MAX_INTENSITY/255;
+        b1=color[2] * MAX_INTENSITY/255;
+        pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(r1,g1,b1 ))
     pixels.show()
 
 def enact_lights_basic(pixels, data, my_id):
