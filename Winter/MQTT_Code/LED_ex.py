@@ -75,7 +75,7 @@ def no_potato_lights(pixels, c1 = 20):
     # mid_blue = [103, 170, 223]
     # dark_blue = [20, 91, 155]
     # purple = [128, 129, 184]
-    color = [255, 255, 255]
+    color = BLUE
     for j in range(PIXEL_COUNT):
         r1=color[0] * MAX_INTENSITY/255;
         g1=color[1] * MAX_INTENSITY/255;
