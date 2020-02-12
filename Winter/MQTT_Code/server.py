@@ -8,7 +8,7 @@ MQTT_SERVER = "192.168.43.130"
 send_path = "topic/serene"
 listen_path = "topic/init_loc"
 rec_client_strings = {}
-MIN_CLIENTS = 2 #Change to 4
+MIN_CLIENTS = 4 #Change to 4
 
 # Variables for tracking game state
 game_grid = None

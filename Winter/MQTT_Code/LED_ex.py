@@ -17,7 +17,7 @@ pixels = Adafruit_WS2801.WS2801Pixels(PIXEL_COUNT, spi=SPI.SpiDev(SPI_PORT, SPI_
 #Serene's code here:
 BLUE = [0, 59, 91]
 GOLD = [254, 184, 28]
-MAX_INTENSITY = 150 #max intensity desired on these LEDs
+MAX_INTENSITY = 100 #max intensity desired on these LEDs
 
 def str2color(c1):
     col = [0,0,0]
@@ -44,19 +44,25 @@ def one_at_a_time(pixels, wait=0.9,color=(255,0,0)):
 
 def have_potato_lights(pixels):
     pixels.clear()
-    red = [254, 0, 0]
-    dark_orange = [255, 90, 0]
-    light_orange = [255, 154, 0]
-    yellow = [254, 206, 0]
+    # red = [254, 0, 0]
+    # dark_orange = [255, 90, 0]
+    # light_orange = [255, 154, 0]
+    # yellow = [254, 206, 0]
     for j in range(PIXEL_COUNT):
-        if j <2:
-            color = red
-        elif j < 4:
-            color = dark_orange
-        elif j < 6:
-            color = light_orange
+        if j == 0:
+            color = [38, 110, 246] #blue
+        elif j == 1:
+            color = [228, 41, 242] #purple
+        elif j == 2:
+            color = [255, 139, 0] #orange
+        elif j == 3: 
+            color = [255, 1, 48] #red
+        elif j == 4:
+            color = [255, 211, 0] #yellow
+        elif j == 5:
+            color = [18, 231, 114] #green
         else:
-            color = yellow
+            color = GOLD
         r1=color[0] * MAX_INTENSITY/255;
         g1=color[1] * MAX_INTENSITY/255;
         b1=color[2] * MAX_INTENSITY/255;
@@ -65,19 +71,12 @@ def have_potato_lights(pixels):
 
 def no_potato_lights(pixels, c1 = 20):
     pixels.clear()
-    light_blue = [167, 214, 235]
-    mid_blue = [103, 170, 223]
-    dark_blue = [20, 91, 155]
-    purple = [128, 129, 184]
+    # light_blue = [167, 214, 235]
+    # mid_blue = [103, 170, 223]
+    # dark_blue = [20, 91, 155]
+    # purple = [128, 129, 184]
+    color = [255, 255, 255]
     for j in range(PIXEL_COUNT):
-        if j < 2:
-            color = light_blue
-        elif j < 4:
-            color = mid_blue
-        elif j < 6:
-            color = dark_blue
-        else:
-            color = purple
         r1=color[0] * MAX_INTENSITY/255;
         g1=color[1] * MAX_INTENSITY/255;
         b1=color[2] * MAX_INTENSITY/255;
