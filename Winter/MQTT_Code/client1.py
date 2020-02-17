@@ -136,6 +136,7 @@ while True:
 					else:
 							pass_pos = GestureRecognition.read()
 
+			
 			position = ""
 			if pass_pos == "R" or pass_pos == "r":
 				position = "RIGHT"
@@ -143,11 +144,13 @@ while True:
 				position = "LEFT"
 			elif pass_pos == "A" or pass_pos == "a":
 				position = "ACROSS"
+			else: #RAN OUT OF TIME
+				position = "OUTOFTIME"
 			
 			# Passing payload with client id, keyword, and position to pass to
 			send_data = send_data.join([MY_ID,"PASS_POTATO",position])
 			publish.single(send_path, send_data, hostname = MQTT_SERVER)
-			print("Passing potato!")
+			print("Passing potato or time is up!")
 			# LIGHTING SCHEME FOR NO POTATO
 			LED.no_potato_lights(pixels)
 			HAVE_POTATO = False
