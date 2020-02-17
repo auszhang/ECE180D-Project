@@ -75,6 +75,19 @@ def on_message(client, userdata, msg):
 				global HAVE_POTATO
 				HAVE_POTATO  = True
 
+def check_time(timer_length, time_elapsed, num):
+		approx = time_elapsed * num / timer_length
+		if time_elapsed < timer_length:
+				for i in range(1,num+1):
+						if approx >= i-0.05 and approx < i + 0.05:
+								print(str(i) + "interval passed")
+								if i == (num+1):
+										print("Final warning!")
+				return False
+		else:
+				print("Time's up!")
+				return True	
+
 while True:
 	#print("Waiting for connection on RFCOMM channel %d")% port
 
@@ -110,8 +123,18 @@ while True:
 			LED.have_potato_lights(pixels)
 
 			pass_pos = GestureRecognition.read()
-			while pass_pos=="X":
-				pass_pos = GestureRecognition.read()
+			#ADDED TIMER CAPABILITY
+			len_timer = 3
+			num_intervals = 4
+			timesup = check_time(len_timer, 0, num_intervals)
+			start_time = time.time()
+			while pass_pos=="X" and timesup == False:
+					passed_time = time.time() - start_time
+					timesup = check_time(len_timer, passed_time, num_intervals)
+					if timesup:
+							pass_pos = "X"
+					else:
+							pass_pos = GestureRecognition.read()
 
 			position = ""
 			if pass_pos == "R" or pass_pos == "r":
@@ -128,32 +151,6 @@ while True:
 			# LIGHTING SCHEME FOR NO POTATO
 			LED.no_potato_lights(pixels)
 			HAVE_POTATO = False
-
-		#data = client_sock.recv(1024)
-		#if len(data) == 0:
-			#break
-		#print("received [%s]") % data
-		#data_array = data.split(";")
-		#if len(data_array) == 3:
-			# Parse client data from Bluetooth data.
-			#my_name = data_array[0]
-			#my_row = data_array[1]
-			#my_col = data_array[2]
-			# Generate my client ID, set last will.
-			#MY_ID = str(hash(my_name))
-                        #if not INITIALIZED:
-                            #client = mqtt.Client()
-                            #LAST_WILL = MY_ID + "DIED"
-                            #client.on_connect=on_connect
-                            #client.on_message=on_message
-                            #client.will_set(send_path,str.encode(LAST_WILL),0,False)
-                            #client.connect(MQTT_SERVER, 1883, 60)
-                            #client.loop_start()
-                            #INITIALIZED = True
-			# Send payload to server.
-			#send_data = ";"
-			#send_data = send_data.join([my_row,my_col,my_name,"",MY_ID])
-			#publish.single(send_path, send_data, hostname = MQTT_SERVER)
 
 	except IOError:
 		pass
