@@ -1,6 +1,8 @@
 import paho.mqtt.publish as publish
 import paho.mqtt.client as mqtt
 import time
+import os
+from pocketsphinx import LiveSpeech, get_model_path
 from server_helpers import *
 from lighting_helpers import *
 MQTT_SERVER = "192.168.43.130"
@@ -21,6 +23,22 @@ failed_pass = False
 fail_msg = ""
 game_start = False
 client_to_notify = ""
+
+# Variables for speech recognition
+model_path = get_model_path()
+
+# LiveSpeech parameters
+speech = LiveSpeech(
+    verbose=False,
+    sampling_rate=16000,
+    buffer_size=1024,
+    no_search=False,
+    full_utt=False,
+    hmm=os.path.join(model_path, 'en-us'),
+    lm=os.path.join(model_path, 'en-us.lm.bin'),
+    #dic=os.path.join(model_path, 'cmudict-en-us.dict')
+    dic='words.dic'
+)
 
 def on_publish(client,userdata,result):
 	#print("published")
