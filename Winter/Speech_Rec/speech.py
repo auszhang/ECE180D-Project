@@ -15,5 +15,5 @@ speech = LiveSpeech(
     dic='words.dic'
 )
 
-for phrase in speech:
-    print(phrase)
+# for phrase in speech:
+#     print(phrase)
