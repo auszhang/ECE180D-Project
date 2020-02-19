@@ -42,9 +42,11 @@ send_path = "topic/init_loc"
 MY_ID = ""
 LAST_WILL = ""
 INITIALIZED = False
-MY_CURRENT_LIGHTING = ""
 # GAME VARIABLES
 HAVE_POTATO = False
+SERVER_TIME = 0
+TURN_START_TIME = 0
+FAILED = False
 
 
 # Configure the count of pixels:
@@ -68,12 +70,19 @@ def on_message(client, userdata, msg):
 		#print("RPi received")
 		#print(msg.topic + " " + statement)
 		#print(statement.split(";"))
+		global HAVE_POTATO
+		global SERVER_TIME
+		global FAILED      
 		if "RECEIVE" or "FAILED_TO_PASS" in statement:
-			data = statement.split(";")
-			if MY_ID == str(data[0]):
-				#print("RECOGNIZED MY ID")
-				global HAVE_POTATO
-				HAVE_POTATO  = True
+				data = statement.split(";")
+				if MY_ID == str(data[0]):
+						#print("RECOGNIZED MY ID")
+						HAVE_POTATO  = True
+						if "RECEIVE" in statement:
+								FAILED = False                 
+								SERVER_TIME = int(data[2]) # Update max timer duration
+						if "FAILED_TO_PASS" in statement:
+								FAILED = True   
 
 def check_time(timer_length, time_elapsed, num):
 		approx = time_elapsed * num / timer_length
@@ -131,10 +140,14 @@ while True:
 
 			pass_pos = GestureRecognition.read()
 			#ADDED TIMER CAPABILITY
-			len_timer = 5
+			len_timer = SERVER_TIME
 			num_intervals = 4
-			timesup = check_time(len_timer, 0, num_intervals)
-			start_time = time.time()
+			if not FAILED:
+					timesup = check_time(len_timer, 0, num_intervals)
+					start_time = time.time()
+					TURN_START_TIME = start_time # Reset timer
+			else:
+					start_time = TURN_START_TIME # Retain timer from last pass
 			while pass_pos=="X" and timesup == False:
 					timesup = check_time(len_timer, time.time() - start_time, num_intervals)
 					if timesup:
