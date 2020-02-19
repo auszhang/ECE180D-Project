@@ -81,11 +81,16 @@ def check_time(timer_length, time_elapsed, num):
 				for i in range(1,num+1):
 						if approx >= i-0.05 and approx < i + 0.05:
 								print(str(i) + "interval passed")
-								if i == (num+1):
-										print("Final warning!")
+								if i >= num-1:
+										print("Final or 2nd to last warning!")
+										LED.final_warning_lights(pixels)
+								else:
+    									LED.timer_interval_lights(pixels)
+				LED.have_potato_lights(pixels) #reset after interval flash!
 				return False
 		else:
 				print("Time's up!")
+				LED.eliminated_lights(pixels)
 				return True	
 
 while True:
@@ -114,6 +119,8 @@ while True:
 			publish.single(send_path, send_data, hostname = MQTT_SERVER)
 			INITIALIZED = True
 			# LIGHTING SCHEME FOR NO POTATO
+
+			#TO DO: add elimination lights if person was eliminated
 			LED.no_potato_lights(pixels)
 		if HAVE_POTATO:
 			print("Received potato!")
@@ -124,15 +131,14 @@ while True:
 
 			pass_pos = GestureRecognition.read()
 			#ADDED TIMER CAPABILITY
-			len_timer = 3
+			len_timer = 5
 			num_intervals = 4
 			timesup = check_time(len_timer, 0, num_intervals)
 			start_time = time.time()
 			while pass_pos=="X" and timesup == False:
-					passed_time = time.time() - start_time
-					timesup = check_time(len_timer, passed_time, num_intervals)
+					timesup = check_time(len_timer, time.time() - start_time, num_intervals)
 					if timesup:
-							pass_pos = "X"
+							sys.exit()
 					else:
 							pass_pos = GestureRecognition.read()
 
@@ -144,15 +150,14 @@ while True:
 				position = "LEFT"
 			elif pass_pos == "A" or pass_pos == "a":
 				position = "ACROSS"
-			else: #RAN OUT OF TIME
-				position = "OUTOFTIME"
 			
 			# Passing payload with client id, keyword, and position to pass to
 			send_data = send_data.join([MY_ID,"PASS_POTATO",position])
 			publish.single(send_path, send_data, hostname = MQTT_SERVER)
 			print("Passing potato or time is up!")
-			# LIGHTING SCHEME FOR NO POTATO
-			LED.no_potato_lights(pixels)
+			if not timesup:
+				# LIGHTING SCHEME FOR NO POTATO
+				LED.no_potato_lights(pixels)
 			HAVE_POTATO = False
 
 	except IOError:
@@ -161,7 +166,7 @@ while True:
 	except KeyboardInterrupt:
 
 		print("disconnected")
-
+		LED.eliminated_lights(pixels)
 		client_sock.close()
 		server_sock.close()
 		print("all done")

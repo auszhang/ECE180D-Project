@@ -17,7 +17,7 @@ pixels = Adafruit_WS2801.WS2801Pixels(PIXEL_COUNT, spi=SPI.SpiDev(SPI_PORT, SPI_
 #Serene's code here:
 BLUE = [0, 59, 91]
 GOLD = [254, 184, 28]
-MAX_INTENSITY = 100 #max intensity desired on these LEDs
+MAX_INTENSITY = 80 #max intensity desired on these LEDs
 
 def str2color(c1):
     col = [0,0,0]
@@ -69,7 +69,39 @@ def have_potato_lights(pixels):
         pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(r1,g1,b1 ))
     pixels.show()
 
-def no_potato_lights(pixels, c1 = 20):
+def eliminated_lights(pixels):
+    pixels.clear()
+    for j in range(PIXEL_COUNT):
+        pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(0,0,0))
+    pixels.show()
+
+def timer_interval_lights(pixels):
+    color = [46, 139, 87] #seagreen
+    r1=color[0] * MAX_INTENSITY/255;
+    g1=color[1] * MAX_INTENSITY/255;
+    b1=color[2] * MAX_INTENSITY/255;
+    pixels.clear()
+    for j in range(PIXEL_COUNT):
+        pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(r1,g1,b1 ))
+    pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(r1,g1,b1 ))
+    pixels.show()
+    time.sleep(0.2)
+
+def final_warning_lights(pixels):
+    color = [254, 0, 0] #red
+    r1=color[0] * MAX_INTENSITY/255;
+    g1=color[1] * MAX_INTENSITY/255;
+    b1=color[2] * MAX_INTENSITY/255;
+    pixels.clear()
+    for j in range(PIXEL_COUNT):
+        pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(r1,g1,b1 ))
+    pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(r1,g1,b1 ))
+    pixels.show()
+    time.sleep(0.2)
+
+
+
+def no_potato_lights(pixels):
     pixels.clear()
     # light_blue = [167, 214, 235]
     # mid_blue = [103, 170, 223]
