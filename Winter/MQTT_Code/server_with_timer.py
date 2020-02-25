@@ -1,14 +1,17 @@
 import paho.mqtt.publish as publish
 import paho.mqtt.client as mqtt
 import time
+import os
+from pocketsphinx import LiveSpeech, get_model_path
 from server_helpers import *
 from lighting_helpers import *
+from threading import Thread
 MQTT_SERVER = "192.168.43.130"
 #port = 1883
 send_path = "topic/serene"
 listen_path = "topic/init_loc"
 rec_client_strings = {}
-MIN_CLIENTS = 1 #Change to 4
+MIN_CLIENTS = 2 #Change to 4
 
 # Variables for tracking game state
 game_grid = None
@@ -21,9 +24,26 @@ failed_pass = False
 fail_msg = ""
 game_start = False
 client_to_notify = ""
-MAX_TIME = 6 # Max timer duration
+MAX_TIME = 8 # Max timer duration
 MIN_TIME = 2 # Min timer duration
 curr_time = MAX_TIME # Current timer duration
+
+# Variables for speech recognition
+model_path = get_model_path()
+last_phrase = "x"
+
+# LiveSpeech parameters
+speech = LiveSpeech(
+    verbose=False,
+    sampling_rate=16000,
+    buffer_size=1024,
+    no_search=False,
+    full_utt=False,
+    hmm=os.path.join(model_path, 'en-us'),
+    lm=os.path.join(model_path, 'en-us.lm.bin'),
+    #dic=os.path.join(model_path, 'cmudict-en-us.dict')
+    dic='words.dic'
+)
 
 def on_publish(client,userdata,result):
 	#print("published")
@@ -57,8 +77,11 @@ def on_message(client, userdata, msg):
                 prev_col = -1
                 curr_intervals = MAX_INTERVALS
     elif "PASS_POTATO" in statement:
-        print("Made it here")
         new_row, new_col, valid = parse_pass(statement, game_grid, potato_row, potato_col)
+        data = parse_from_string(statement)
+        direction = data[2]
+        if direction != last_phrase.upper():
+            valid = False
         if valid:
             print("valid")
             failed_pass = False
@@ -68,7 +91,6 @@ def on_message(client, userdata, msg):
             print("not valid")
             failed_pass = True
             # Set failure message
-            data = parse_from_string(statement)
             client_id = data[0]
             fail_msg = client_id+";FAILED_TO_PASS"
     else:
@@ -77,12 +99,23 @@ def on_message(client, userdata, msg):
         rec_client_strings[split_string[2]]=statement
         time.sleep(0.5)
 
-client = mqtt.Client()
+def listen_speech():
+    for phrase in speech:
+        last_phrase = phrase
+        # print("PHRASE: ", last_phrase)
+
+# Initialize speech recognition in separate thread
+speech_thread = Thread(target = listen_speech)
+speech_thread.daemon = True
+speech_thread.start()
+
+client = mqtt.Client() 
 client.on_connect = on_connect
 client.on_message = on_message
 client.on_publish = on_publish
 client.connect(MQTT_SERVER, 1883, 60)
 client.loop_start()
+
 while True:
     time.sleep(0.5)
     #print(rec_client_strings)
@@ -99,8 +132,8 @@ while True:
         pass_msg = fail_msg
     elif potato_row != prev_row or potato_col != prev_col:
         pass_msg = str(game_grid[potato_row][potato_col]) + ";RECEIVE;" + str(curr_time)
-        if curr_intervals > MIN_INTERVALS:
-            curr_intervals -= 1
+        if curr_time > MIN_TIME:
+            curr_time -= 1
         prev_row = potato_row
         prev_col = potato_col
     else:

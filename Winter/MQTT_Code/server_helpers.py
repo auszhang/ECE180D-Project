@@ -100,9 +100,9 @@ def get_pos_from_dir(row, col, direction):
         new_col = flip_num(col)
     return new_row, new_col
 
-# Given client statement, game grid, and current potato position
+# Given client statement, game grid, current potato position,
 # Return new position of potato and whether move is valid
-def parse_pass(statement, game_grid, potato_row, potato_col):
+def parse_pass(statement, game_grid, potato_row, potato_col, last_phrase):
     data = parse_from_string(statement)
     client_id = data[0]
     direction = data[2]
