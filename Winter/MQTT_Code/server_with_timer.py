@@ -102,7 +102,7 @@ def on_message(client, userdata, msg):
 def listen_speech():
     for phrase in speech:
         last_phrase = phrase
-        # print("PHRASE: ", last_phrase)
+        print("PHRASE: ", last_phrase)
 
 # Initialize speech recognition in separate thread
 speech_thread = Thread(target = listen_speech)
