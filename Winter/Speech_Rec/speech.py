@@ -15,5 +15,9 @@ speech = LiveSpeech(
     dic='words.dic'
 )
 
-# for phrase in speech:
-#     print(phrase)
+count = 0
+for phrase in speech:
+    print(phrase)
+    print("COUNT: ", count)
+    count += 1
+

@@ -75,7 +75,7 @@ def on_message(client, userdata, msg):
                 potato_row, potato_col = get_random_pos(game_grid)
                 prev_row = -1
                 prev_col = -1
-                curr_intervals = MAX_INTERVALS
+                curr_intervals = MAX_TIME
     elif "PASS_POTATO" in statement:
         new_row, new_col, valid = parse_pass(statement, game_grid, potato_row, potato_col)
         data = parse_from_string(statement)
