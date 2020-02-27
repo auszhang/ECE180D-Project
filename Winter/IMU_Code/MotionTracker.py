@@ -15,6 +15,10 @@ magXmax =  0
 magYmax =  0
 magZmax =  0
 
+accXOffset = 0
+accYOffset = 0
+accZOffset = 0
+
 # If the IMU is upside down (Skull logo facing up), change this value to 1
 IMU_UPSIDE_DOWN = 1	
 RAD_TO_DEG = 57.29578
@@ -149,6 +153,10 @@ def kalmanFilterX ( accAngle, gyroRate, DT):
 
 def readIMU(IMU):
 
+    global accXOffset
+    global accYOffset
+    global accZOffset
+    
     global magXmin
     global magYmin
     global magZmin
@@ -430,4 +438,21 @@ def readIMU(IMU):
 
     return outputarray
 
+def measureOffset(IMU):
+    global accXOffset
+    global accYOffset
+    global accZOffset
+    
+    print("Measuring accelerometer offsets")
+    xtotal = 0
+    ytotal = 0
+    ztotal = 0
+    for i in range(50):
+        results = readIMU(IMU)
+        xtotal = xtotal + results[0]
+        ytotal = ytotal + results[1]
+        ztotal = ztotal + results[2]
 
+    accXOffset = xtotal / 50
+    accYOffset = ytotal / 50
+    accZOffset = ztotal / 50
