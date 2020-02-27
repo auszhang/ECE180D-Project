@@ -20,8 +20,6 @@ import GestureRecognition
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(12, GPIO.OUT)
-motor = GPIO.PWM(12, 100)
-MOTORSPEED = 50	#From 0 to 100
 
 #GPIO.setup(17, GPIO.OUT)
 base_dir = '/sys/bus/w1/devices/'
@@ -98,11 +96,13 @@ def check_time(timer_length, time_elapsed, num):
 								else:
     									LED.timer_interval_lights(pixels)
 				LED.have_potato_lights(pixels) #reset after interval flash!
+				GPIO.output(12, 1)
+
 				return False
 		else:
 				print("Time's up!")
 				LED.eliminated_lights(pixels)
-				motor.ChangeDutyCycle(0)
+				GPIO.output(12, 0)
 				return True	
 
 while True:
@@ -134,15 +134,15 @@ while True:
 
 			#TO DO: add elimination lights if person was eliminated
 			LED.no_potato_lights(pixels)
-			motor.ChangeDutyCycle(0)
+			GPIO.output(12, 0)
 		if HAVE_POTATO:
 			print("Received potato!")
-			# pass_pos = raw_input("Enter which direction to pass (R, L, or A): ")
+			# pass_pos = raw_input("Enter which direction to pass (R, L, or A): ")s
 			
 			# LIGHTING SCHEME FOR WITH POTATO
 			LED.have_potato_lights(pixels)
 			# TURN ON VIBRATION MOTOR
-			motor.ChangeDutyCycle(MOTORSPEED)
+			GPIO.output(12, 1)
 
 			pass_pos = GestureRecognition.read()
 			#ADDED TIMER CAPABILITY
@@ -178,7 +178,7 @@ while True:
 				# LIGHTING SCHEME FOR NO POTATO
 				LED.no_potato_lights(pixels)
 				# TURN VIBRATION MOTOR OFF
-				motor.ChangeDutyCycle(0)
+				GPIO.output(12, 0)
 			HAVE_POTATO = False
 
 	except IOError:
@@ -188,7 +188,7 @@ while True:
 
 		print("disconnected")
 		LED.eliminated_lights(pixels)
-		motor.ChangeDutyCycle(0)
+		GPIO.output(12, 0)
 		client_sock.close()
 		server_sock.close()
 		print("all done")
