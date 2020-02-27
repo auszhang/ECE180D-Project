@@ -24,7 +24,7 @@ failed_pass = False
 fail_msg = ""
 game_start = False
 client_to_notify = ""
-MAX_TIME = 8 # Max timer duration
+MAX_TIME = 20 # Max timer duration
 MIN_TIME = 2 # Min timer duration
 curr_time = MAX_TIME # Current timer duration
 
@@ -101,8 +101,8 @@ def on_message(client, userdata, msg):
 
 def listen_speech():
     for phrase in speech:
-        last_phrase = phrase
-        print("PHRASE: ", last_phrase)
+        last_phrase = str(phrase)
+        print("PHRASE:", last_phrase.strip())
 
 # Initialize speech recognition in separate thread
 speech_thread = Thread(target = listen_speech)
