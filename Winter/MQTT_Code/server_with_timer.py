@@ -11,7 +11,7 @@ MQTT_SERVER = "192.168.43.130"
 send_path = "topic/serene"
 listen_path = "topic/init_loc"
 rec_client_strings = {}
-MIN_CLIENTS = 2 #Change to 4
+MIN_CLIENTS = 1 #Change to 4
 
 # Variables for tracking game state
 game_grid = None
@@ -82,6 +82,8 @@ def on_message(client, userdata, msg):
         direction = data[2]
         if direction != last_phrase.upper():
             valid = False
+        else:
+            valid = True
         if valid:
             print("valid")
             failed_pass = False
@@ -100,6 +102,7 @@ def on_message(client, userdata, msg):
         time.sleep(0.5)
 
 def listen_speech():
+    global last_phrase
     for phrase in speech:
         last_phrase = str(phrase)
         print("PHRASE:", last_phrase.strip())
