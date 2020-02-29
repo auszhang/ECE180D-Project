@@ -220,12 +220,20 @@ def readIMU(IMU):
     global mag_medianTable2Y
     global mag_medianTable2Z
 
-
+    currentACCx = IMU.readACCx()
+    currentACCy = IMU.readACCy()
+    currentACCz = IMU.readACCz()
+    
+    LPfactor = 0.7
+    
+    accXOffset = LPfactor * accXOffset + (1 - LPfactor) * currentACCx
+    accYOffset = LPfactor * accYOffset + (1 - LPfactor) * currentACCy
+    accZOffset = LPfactor * accZOffset + (1 - LPfactor) * currentACCz
 
     #Read the accelerometer,gyroscope and magnetometer values
-    ACCx = IMU.readACCx()
-    ACCy = IMU.readACCy()
-    ACCz = IMU.readACCz()
+    ACCx = currentACCx - accXOffset
+    ACCy = currentACCy - accYOffset
+    ACCz = currentACCz - accZOffset
     GYRx = IMU.readGYRx()
     GYRy = IMU.readGYRy()
     GYRz = IMU.readGYRz()
@@ -443,16 +451,17 @@ def measureOffset(IMU):
     global accYOffset
     global accZOffset
     
+    samples = 200
+
     print("Measuring accelerometer offsets")
     xtotal = 0
     ytotal = 0
     ztotal = 0
-    for i in range(50):
-        results = readIMU(IMU)
-        xtotal = xtotal + results[0]
-        ytotal = ytotal + results[1]
-        ztotal = ztotal + results[2]
+    for i in range(samples):
+        xtotal = xtotal + IMU.readACCx()
+        ytotal = ytotal + IMU.readACCy()
+        ztotal = ztotal + IMU.readACCz()
 
-    accXOffset = xtotal / 50
-    accYOffset = ytotal / 50
-    accZOffset = ztotal / 50
+    accXOffset = xtotal / samples
+    accYOffset = ytotal / samples
+    accZOffset = ztotal / samples
