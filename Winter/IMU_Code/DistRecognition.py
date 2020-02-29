@@ -2,18 +2,16 @@ import MotionTracker
 import datetime
 import time
 
-IMU_data = "../IMU_Local/IMU_data.txt"
-f = open(IMU_data,'r')
-
-#some distance = float(f.readline())
-
 results = [0, 0, 0]
-
 Ymax = 0.2
 Xmin = -0.2 
 Xmax = 0.2
 
 a = datetime.datetime.now()
+
+def waitForSteady():
+    #keep reading until results[0,1,2] are close to 0
+    return 0
 
 def read():
     global a

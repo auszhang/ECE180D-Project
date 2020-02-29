@@ -60,6 +60,15 @@ pixels = Adafruit_WS2801.WS2801Pixels(PIXEL_COUNT, spi=SPI.SpiDev(SPI_PORT, SPI_
 # HAVE_POTATO = False
 # HAVE_POTATO_STRING = ""
 
+def listen_IMU():
+	DistRecognition.read()
+
+# Initialize Gesture Recognition in separate thread
+lastGesture = "X"
+IMU_thread = Thread(target = listen_IMU)
+IMU_thread.daemon = True
+IMU_thread.start()
+
 for i in range(50):
 	DistRecognition.read()
 print("Finished Start")
