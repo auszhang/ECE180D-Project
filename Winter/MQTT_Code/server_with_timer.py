@@ -80,11 +80,10 @@ def on_message(client, userdata, msg):
         new_row, new_col, valid = parse_pass(statement, game_grid, potato_row, potato_col)
         data = parse_from_string(statement)
         direction = data[2]
+        speech_valid = True
         if direction != last_phrase.upper():
-            valid = False
-        else:
-            valid = True
-        if valid:
+            speech_valid = False
+        if valid and speech_valid:
             print("valid")
             failed_pass = False
             potato_row = new_row
