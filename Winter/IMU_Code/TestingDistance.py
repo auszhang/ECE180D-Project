@@ -37,6 +37,8 @@ def powerRead():
         for i in range(50):
             results = read(results[0], results[1], results[2])
         return "R"
+    else:
+        return "X"
 
 
 def read(Xx, Xy, Xz): #Xx, Xy, Xz
