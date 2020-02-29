@@ -1,9 +1,9 @@
-import GestureRecognition
+import AccRecognition
 
-GestureRecognition.getData()
+AccRecognition.getData()
 
 while True:
-	a = GestureRecognition.read()
+	a = AccRecognition.read()
 	if not a=="X":
 		print(a)
 

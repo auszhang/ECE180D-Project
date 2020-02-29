@@ -16,12 +16,12 @@ import LED_ex as LED
 
 #import IMU code
 sys.path.insert(1, '../IMU_Code')
-import TestingDistance
+from threading import Thread
+import DistRecognition
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(12, GPIO.OUT)
 
-#GPIO.setup(17, GPIO.OUT)
 base_dir = '/sys/bus/w1/devices/'
 
 # server_sock=BluetoothSocket( RFCOMM )
@@ -60,9 +60,15 @@ pixels = Adafruit_WS2801.WS2801Pixels(PIXEL_COUNT, spi=SPI.SpiDev(SPI_PORT, SPI_
 # HAVE_POTATO = False
 # HAVE_POTATO_STRING = ""
 
+for i in range(50):
+	DistRecognition.read()
+print("Finished Start")
+
+
 def on_connect(client, userdata, flags, rc):
 		print("Connected: result code " + str(rc))
 		client.subscribe(listen_path)
+
 
 def on_message(client, userdata, msg):
 		payload = msg.payload
@@ -96,7 +102,7 @@ def check_time(timer_length, time_elapsed, num):
 								else:
     									LED.timer_interval_lights(pixels)
 				LED.have_potato_lights(pixels) #reset after interval flash!
-				GPIO.output(12, 1)
+				#GPIO.output(12, 1)
 
 				return False
 		else:
@@ -142,9 +148,9 @@ while True:
 			# LIGHTING SCHEME FOR WITH POTATO
 			LED.have_potato_lights(pixels)
 			# TURN ON VIBRATION MOTOR
-			GPIO.output(12, 1)
+			#GPIO.output(12, 1)
 
-			pass_pos = TestingDistance.powerRead()
+			pass_pos = DistRecognition.read()
 			#ADDED TIMER CAPABILITY
 			len_timer = SERVER_TIME
 			num_intervals = 4
@@ -159,7 +165,7 @@ while True:
 					if timesup:
 							sys.exit()
 					else:
-							pass_pos = TestingDistance.powerRead()
+							pass_pos = DistRecognition.read()
 
 			
 			position = ""
