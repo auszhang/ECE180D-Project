@@ -16,7 +16,7 @@ import LED_ex as LED
 
 #import IMU code
 sys.path.insert(1, '../IMU_Code')
-import GestureRecognition
+import TestingDistance
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(12, GPIO.OUT)
@@ -144,7 +144,7 @@ while True:
 			# TURN ON VIBRATION MOTOR
 			GPIO.output(12, 1)
 
-			pass_pos = GestureRecognition.read()
+			pass_pos = TestingDistance.powerRead()
 			#ADDED TIMER CAPABILITY
 			len_timer = SERVER_TIME
 			num_intervals = 4
@@ -159,7 +159,7 @@ while True:
 					if timesup:
 							sys.exit()
 					else:
-							pass_pos = GestureRecognition.read()
+							pass_pos = TestingDistance.powerRead()
 
 			
 			position = ""

@@ -7,7 +7,37 @@ f = open(IMU_data,'r')
 
 #some distance = float(f.readline())
 
+results = [0, 0, 0]
+
+Ymax = 0.1
+Xmin = -0.1 
+Xmax = 0.1
+
 a = datetime.datetime.now()
+
+def powerRead():
+    
+    global results
+
+    global Ymax
+    global Xmin 
+    global Xmax 
+    
+    results = read(results[0], results[1], results[2])
+    
+    if results[1] > Ymax:         #Across
+        for i in range(50):
+            results = read(results[0], results[1], results[2])
+        return "A"
+    elif results[0] < Xmin:       #Left
+        for i in range(50):
+            results = read(results[0], results[1], results[2])
+        return "L"
+    elif results[0] > Xmax:      #Right
+        for i in range(50):
+            results = read(results[0], results[1], results[2])
+        return "R"
+
 
 def read(Xx, Xy, Xz): #Xx, Xy, Xz
 
@@ -34,11 +64,11 @@ def read(Xx, Xy, Xz): #Xx, Xy, Xz
     return [Xx, Xy, Xz]
 
 def main():
-    results = [0, 0, 0]
+    global results
 
-    Ymax = 0.1
-    Xmin = -0.1 
-    Xmax = 0.1
+    global Ymax
+    global Xmin 
+    global Xmax 
 
     while(1):
         results = read(results[0], results[1], results[2])
