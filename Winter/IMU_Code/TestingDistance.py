@@ -7,12 +7,6 @@ f = open(IMU_data,'r')
 
 #some distance = float(f.readline())
 
-accXmin =  float(f.readline())
-accYmin =  float(f.readline())
-accZmin =  float(f.readline())
-CFXmax =  float(f.readline())
-CFYmax =  float(f.readline())
-
 a = datetime.datetime.now()
 
 def read(Xx, Xy, Xz): #Xx, Xy, Xz
