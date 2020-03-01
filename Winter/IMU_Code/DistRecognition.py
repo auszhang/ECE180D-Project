@@ -6,12 +6,19 @@ results = [0, 0]
 Ymax = 0.2
 Xmin = -0.2 
 Xmax = 0.2
+HP_factor = 0.95
 
 a = datetime.datetime.now()
 
 def waitForSteady():
-    #keep reading until results[0,1,2] are close to 0
-    return 0
+    counter = 0
+    while counter < 10:
+        read()
+        if results[0] < 0.1 and results[0] > -0.1 and results[1] < 0.1 and results[1] > -0.1:
+            counter = counter + 1
+        else:
+            counter = 0
+    print("Ready")
 
 def read():
     global a
@@ -19,6 +26,7 @@ def read():
     global Ymax
     global Xmin 
     global Xmax 
+    global HP_factor
 
     b = datetime.datetime.now() - a
     a = datetime.datetime.now()
@@ -26,10 +34,8 @@ def read():
 
     output = MotionTracker.readIMU(MotionTracker.IMU)
 
-    pullFactor = 0.05
-
-    results[0] = (results[0] + output[0] * LP) * (1 - pullFactor)
-    results[1] = (results[1] + output[1] * LP) * (1 - pullFactor)
+    results[0] = (results[0] + output[0] * LP) * HP_factor
+    results[1] = (results[1] + output[1] * LP) * HP_factor
 
     if results[1] > Ymax:         #Across
         return "A"
@@ -41,21 +47,19 @@ def read():
         return "X"
 
 def main():
+    waitForSteady()
     while(1):
         gesture = read()
         
         if gesture == "A":         #Across
             print("A")
-            for i in range(50):
-                results = read()
+            waitForSteady()
         elif gesture == "L":       #Left
             print("L")
-            for i in range(50):
-                results = read()
+            waitForSteady()
         elif gesture == "R":      #Right
             print("R")
-            for i in range(50):
-                results = read()
+            waitForSteady()
 
 if __name__ == "__main__":
     main()

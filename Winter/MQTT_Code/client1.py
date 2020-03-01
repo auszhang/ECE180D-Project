@@ -19,6 +19,7 @@ sys.path.insert(1, '../IMU_Code')
 from threading import Thread
 import DistRecognition
 
+#setup vibration motor
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(12, GPIO.OUT)
 
@@ -60,19 +61,19 @@ pixels = Adafruit_WS2801.WS2801Pixels(PIXEL_COUNT, spi=SPI.SpiDev(SPI_PORT, SPI_
 # HAVE_POTATO = False
 # HAVE_POTATO_STRING = ""
 
+lastGesture = "X"
 def listen_IMU():
-	DistRecognition.read()
+	DistRecognition.waitForSteady()
+	while 1:
+		lastGesture = DistRecognition.read()
+		if lastGesture != "X":
+			print(lastGesture)
+			DistRecognition.waitForSteady()
 
 # Initialize Gesture Recognition in separate thread
-lastGesture = "X"
 IMU_thread = Thread(target = listen_IMU)
 IMU_thread.daemon = True
 IMU_thread.start()
-
-for i in range(50):
-	DistRecognition.read()
-print("Finished Start")
-
 
 def on_connect(client, userdata, flags, rc):
 		print("Connected: result code " + str(rc))
@@ -159,7 +160,7 @@ while True:
 			# TURN ON VIBRATION MOTOR
 			#GPIO.output(12, 1)
 
-			pass_pos = DistRecognition.read()
+			pass_pos = lastGesture
 			#ADDED TIMER CAPABILITY
 			len_timer = SERVER_TIME
 			num_intervals = 4
@@ -174,7 +175,7 @@ while True:
 					if timesup:
 							sys.exit()
 					else:
-							pass_pos = DistRecognition.read()
+							pass_pos = lastGesture
 
 			
 			position = ""
