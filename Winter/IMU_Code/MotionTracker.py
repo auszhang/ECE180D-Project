@@ -15,10 +15,6 @@ magXmax =  0
 magYmax =  0
 magZmax =  0
 
-accXOffset = 0
-accYOffset = 0
-accZOffset = 0
-
 # If the IMU is upside down (Skull logo facing up), change this value to 1
 IMU_UPSIDE_DOWN = 1	
 RAD_TO_DEG = 57.29578
@@ -26,7 +22,8 @@ M_PI = 3.14159265358979323846
 G_GAIN = 0.070  	# [deg/s/LSB]  If you change the dps for gyro, you need to update this value accordingly
 AA =  0.40      	# Complementary filter constant
 MAG_LPF_FACTOR = 0.4 	# Low pass filter constant magnetometer
-ACC_LPF_FACTOR = 0.4 	# Low pass filter constant for accelerometer
+ACC_LPF_FACTOR = 0.1 	# Low pass filter constant for accelerometer, smaller = stronger
+ACC_HPF_FACTOR = 0.9    # High pass filter constant for accelerometer, smaller = stronger
 ACC_MEDIANTABLESIZE = 9    # Median filter table size for accelerometer. Higher = smoother but a longer delay
 MAG_MEDIANTABLESIZE = 9    	# Median filter table size for magnetometer. Higher = smoother but a longer delay
 
@@ -61,6 +58,15 @@ oldZMagRawValue = 0
 oldXAccRawValue = 0
 oldYAccRawValue = 0
 oldZAccRawValue = 0
+HP_ACCx = 0
+HP_ACCy = 0
+HP_ACCz = 0
+LP_ACCx = 0
+LP_ACCy = 0
+LP_ACCz = 0
+BP_ACCx = 0
+BP_ACCy = 0
+BP_ACCz = 0
 a = datetime.datetime.now()
 
 #Setup the tables for the median filter. Fill them all with '1' so we dont get devide by zero error 
@@ -153,10 +159,6 @@ def kalmanFilterX ( accAngle, gyroRate, DT):
 
 def readIMU(IMU):
 
-    global accXOffset
-    global accYOffset
-    global accZOffset
-    
     global magXmin
     global magYmin
     global magZmin
@@ -171,6 +173,7 @@ def readIMU(IMU):
     global AA     	# Complementary filter constant
     global MAG_LPF_FACTOR 	# Low pass filter constant magnetometer
     global ACC_LPF_FACTOR 	# Low pass filter constant for accelerometer
+    global ACC_HPF_FACTOR   # High pass filter constant for accelerometer
     global ACC_MEDIANTABLESIZE    	# Median filter table size for accelerometer. Higher = smoother but a longer delay
     global MAG_MEDIANTABLESIZE    	# Median filter table size for magnetometer. Higher = smoother but a longer delay
    
@@ -206,6 +209,15 @@ def readIMU(IMU):
     global oldXAccRawValue
     global oldYAccRawValue
     global oldZAccRawValue
+    global HP_ACCx
+    global HP_ACCy
+    global HP_ACCz
+    global LP_ACCx
+    global LP_ACCy
+    global LP_ACCz
+    global BP_ACCx
+    global BP_ACCy
+    global BP_ACCz
     global a
     global acc_medianTable1X
     global acc_medianTable1Y
@@ -219,21 +231,11 @@ def readIMU(IMU):
     global mag_medianTable2X
     global mag_medianTable2Y
     global mag_medianTable2Z
-
-    currentACCx = IMU.readACCx()
-    currentACCy = IMU.readACCy()
-    currentACCz = IMU.readACCz()
     
-    LPfactor = 0.7
-    
-    accXOffset = LPfactor * accXOffset + (1 - LPfactor) * currentACCx
-    accYOffset = LPfactor * accYOffset + (1 - LPfactor) * currentACCy
-    accZOffset = LPfactor * accZOffset + (1 - LPfactor) * currentACCz
-
     #Read the accelerometer,gyroscope and magnetometer values
-    ACCx = currentACCx - accXOffset
-    ACCy = currentACCy - accYOffset
-    ACCz = currentACCz - accZOffset
+    ACCx = IMU.readACCx()
+    ACCy = IMU.readACCy()
+    ACCz = IMU.readACCz()
     GYRx = IMU.readGYRx()
     GYRy = IMU.readGYRy()
     GYRz = IMU.readGYRz()
@@ -252,14 +254,25 @@ def readIMU(IMU):
     LP = b.microseconds/(1000000*1.0)
 
     ############################################### 
+    #### Apply high pass filter ####
+    ###############################################
+    HP_ACCx =  ACC_HPF_FACTOR * (HP_ACCx + ACCx - oldXAccRawValue)
+    HP_ACCy =  ACC_HPF_FACTOR * (HP_ACCy + ACCy - oldYAccRawValue)
+    HP_ACCz =  ACC_HPF_FACTOR * (HP_ACCz + ACCz - oldZAccRawValue)
+
+    ############################################### 
     #### Apply low pass filter ####
     ###############################################
     MAGx =  MAGx  * MAG_LPF_FACTOR + oldXMagRawValue*(1 - MAG_LPF_FACTOR);
     MAGy =  MAGy  * MAG_LPF_FACTOR + oldYMagRawValue*(1 - MAG_LPF_FACTOR);
     MAGz =  MAGz  * MAG_LPF_FACTOR + oldZMagRawValue*(1 - MAG_LPF_FACTOR);
-    ACCx =  ACCx  * ACC_LPF_FACTOR + oldXAccRawValue*(1 - ACC_LPF_FACTOR);
-    ACCy =  ACCy  * ACC_LPF_FACTOR + oldYAccRawValue*(1 - ACC_LPF_FACTOR);
-    ACCz =  ACCz  * ACC_LPF_FACTOR + oldZAccRawValue*(1 - ACC_LPF_FACTOR);
+    BP_ACCx =  HP_ACCx  * ACC_LPF_FACTOR + BP_ACCx*(1 - ACC_LPF_FACTOR);
+    BP_ACCy =  HP_ACCy  * ACC_LPF_FACTOR + BP_ACCy*(1 - ACC_LPF_FACTOR);
+    BP_ACCz =  HP_ACCz  * ACC_LPF_FACTOR + BP_ACCz*(1 - ACC_LPF_FACTOR);
+    LP_ACCx = ACCx * ACC_LPF_FACTOR + LP_ACCx * (1 - ACC_LPF_FACTOR);
+    LP_ACCy = ACCy * ACC_LPF_FACTOR + LP_ACCy * (1 - ACC_LPF_FACTOR);
+    LP_ACCz = ACCz * ACC_LPF_FACTOR + LP_ACCz * (1 - ACC_LPF_FACTOR);
+
 
     oldXMagRawValue = MAGx
     oldYMagRawValue = MAGy
@@ -278,9 +291,9 @@ def readIMU(IMU):
         acc_medianTable1Z[x] = acc_medianTable1Z[x-1]
 
     # Insert the lates values
-    acc_medianTable1X[0] = ACCx
-    acc_medianTable1Y[0] = ACCy
-    acc_medianTable1Z[0] = ACCz    
+    acc_medianTable1X[0] = LP_ACCx
+    acc_medianTable1Y[0] = LP_ACCy
+    acc_medianTable1Z[0] = LP_ACCz    
 
     # Copy the tables
     acc_medianTable2X = acc_medianTable1X[:]
@@ -293,9 +306,9 @@ def readIMU(IMU):
     acc_medianTable2Z.sort()
 
     # The middle value is the value we are interested in
-    ACCx = acc_medianTable2X[ACC_MEDIANTABLESIZE/2];
-    ACCy = acc_medianTable2Y[ACC_MEDIANTABLESIZE/2];
-    ACCz = acc_medianTable2Z[ACC_MEDIANTABLESIZE/2];
+    LP_ACCx = acc_medianTable2X[ACC_MEDIANTABLESIZE/2];
+    LP_ACCy = acc_medianTable2Y[ACC_MEDIANTABLESIZE/2];
+    LP_ACCz = acc_medianTable2Z[ACC_MEDIANTABLESIZE/2];
 
 
 
@@ -345,12 +358,12 @@ def readIMU(IMU):
 
     if not IMU_UPSIDE_DOWN:
         # If the IMU is up the correct way (Skull logo facing down), use these calculations
-        AccXangle =  (math.atan2(ACCy,ACCz)*RAD_TO_DEG)
-        AccYangle =  (math.atan2(ACCz,ACCx)+M_PI)*RAD_TO_DEG
+        AccXangle =  (math.atan2(LP_ACCy, LP_ACCz)*RAD_TO_DEG)
+        AccYangle =  (math.atan2(LP_ACCz, LP_ACCx)+M_PI)*RAD_TO_DEG
     else:
         #Us these four lines when the IMU is upside down. Skull logo is facing up
-        AccXangle =  (math.atan2(-ACCy,-ACCz)*RAD_TO_DEG)
-        AccYangle =  (math.atan2(-ACCz,-ACCx)+M_PI)*RAD_TO_DEG
+        AccXangle =  (math.atan2(-LP_ACCy,-LP_ACCz)*RAD_TO_DEG)
+        AccYangle =  (math.atan2(-LP_ACCz,-LP_ACCx)+M_PI)*RAD_TO_DEG
 
 
 
@@ -388,12 +401,12 @@ def readIMU(IMU):
     #Normalize accelerometer raw values.
     if not IMU_UPSIDE_DOWN:        
         #Use these two lines when the IMU is up the right way. Skull logo is facing down
-        accXnorm = ACCx/math.sqrt(ACCx * ACCx + ACCy * ACCy + ACCz * ACCz)
-        accYnorm = ACCy/math.sqrt(ACCx * ACCx + ACCy * ACCy + ACCz * ACCz)
+        accXnorm = LP_ACCx/math.sqrt(LP_ACCx * LP_ACCx + LP_ACCy * LP_ACCy + LP_ACCz * LP_ACCz)
+        accYnorm = LP_ACCy/math.sqrt(LP_ACCx * LP_ACCx + LP_ACCy * LP_ACCy + LP_ACCz * LP_ACCz)
     else:
         #Us these four lines when the IMU is upside down. Skull logo is facing up
-        accXnorm = -ACCx/math.sqrt(ACCx * ACCx + ACCy * ACCy + ACCz * ACCz)
-        accYnorm = ACCy/math.sqrt(ACCx * ACCx + ACCy * ACCy + ACCz * ACCz)
+        accXnorm = -LP_ACCx/math.sqrt(LP_ACCx * LP_ACCx + LP_ACCy * LP_ACCy + LP_ACCz * LP_ACCz)
+        accYnorm = LP_ACCy/math.sqrt(LP_ACCx * LP_ACCx + LP_ACCy * LP_ACCy + LP_ACCz * LP_ACCz)
 
     #Calculate pitch and roll
 
@@ -421,7 +434,7 @@ def readIMU(IMU):
     ############################ END ##################################
 
     #print(str(ACCx) + ", " + str(ACCy) + ", " + str(ACCz) + ", " + str(gyroXangle) + ", " + str(gyroYangle) + ", " + str(gyroZangle) + ", " + str(CFangleX) + ", " + str(CFangleY))
-    outputarray = [ACCx, ACCy, ACCz, CFangleX, CFangleY]
+    outputarray = [BP_ACCx, BP_ACCy, BP_ACCz, CFangleX, CFangleY]
 
     #if 1:			#Change to '0' to stop showing the angles from the accelerometer
     #    print ("# ACCX Angle %5.2f \t\t ACCY Angle %5.2f #  " % (AccXangle, AccYangle)),
