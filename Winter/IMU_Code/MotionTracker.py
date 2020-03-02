@@ -8,12 +8,15 @@ import datetime
 import os
 import subprocess
 
-magXmin =  0
-magYmin =  0
-magZmin =  0
-magXmax =  0
-magYmax =  0
-magZmax =  0
+IMU_data = "../IMU_Local/IMU_data.txt"
+f = open(IMU_data,'r')
+
+magXmin =  float(f.readline())
+magYmin =  float(f.readline())
+magZmin =  float(f.readline())
+magXmax =  float(f.readline())
+magYmax =  float(f.readline())
+magZmax =  float(f.readline())
 
 # If the IMU is upside down (Skull logo facing up), change this value to 1
 IMU_UPSIDE_DOWN = 1	
@@ -219,6 +222,7 @@ def readIMU(IMU):
     global BP_ACCy
     global BP_ACCz
     global a
+
     global acc_medianTable1X
     global acc_medianTable1Y
     global acc_medianTable1Z
@@ -434,7 +438,7 @@ def readIMU(IMU):
     ############################ END ##################################
 
     #print(str(ACCx) + ", " + str(ACCy) + ", " + str(ACCz) + ", " + str(gyroXangle) + ", " + str(gyroYangle) + ", " + str(gyroZangle) + ", " + str(CFangleX) + ", " + str(CFangleY))
-    outputarray = [BP_ACCx, BP_ACCy, BP_ACCz, CFangleX, CFangleY]
+    outputarray = [BP_ACCx, BP_ACCy, tiltCompensatedHeading]
 
     #if 1:			#Change to '0' to stop showing the angles from the accelerometer
     #    print ("# ACCX Angle %5.2f \t\t ACCY Angle %5.2f #  " % (AccXangle, AccYangle)),
