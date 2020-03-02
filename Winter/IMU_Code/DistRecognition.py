@@ -2,13 +2,16 @@ import MotionTracker
 import datetime
 import time
 
-results = [0, 0]
-LP_results = [0, 0]
-Ymax = 0.2
-Xmin = -0.2 
-Xmax = 0.2
-HP_factor = 0.95
-LP_factor = 0.03
+accelerometer = [0, 0]
+heading = 0
+old_heading = 0
+CF_velocity = [0, 0]
+CF_factor = 0.07     #Larger --> More accelerometery, Smaller --> More magnetometery
+heading_gain = 1
+accelerometer_gain = 0.1
+Ymax = 30
+Xmin = -4 
+Xmax = 4
 
 a = datetime.datetime.now()
 
@@ -16,7 +19,7 @@ def waitForSteady():
     counter = 0
     while counter < 10:
         read()
-        if results[0] < 0.1 and results[0] > -0.1 and results[1] < 0.1 and results[1] > -0.1:
+        if CF_velocity[0] < 1 and CF_velocity[0] > -1 and CF_velocity[1] < 8 and CF_velocity[1] > -8:
             counter = counter + 1
         else:
             counter = 0
@@ -24,13 +27,16 @@ def waitForSteady():
 
 def read():
     global a
-    global results
-    global LP_results
+    global accelerometer
+    global heading
+    global old_heading
+    global CF_velocity
+    global CF_factor
+    global heading_gain
+    global accelerometer_gain
     global Ymax
     global Xmin 
     global Xmax 
-    global HP_factor
-    global LP_factor
 
     b = datetime.datetime.now() - a
     a = datetime.datetime.now()
@@ -38,37 +44,41 @@ def read():
 
     output = MotionTracker.readIMU(MotionTracker.IMU)
 
-    results[0] = (results[0] + output[0] * LP) * HP_factor
-    results[1] = (results[1] + output[1] * LP) * HP_factor
+    accelerometer[0] = output[0] * accelerometer_gain
+    accelerometer[1] = output[1] * accelerometer_gain
+    heading = output[2]
 
-    LP_results[0] = (1-LP_factor) * LP_results[0] + LP_factor * results[0]
-    LP_results[1] = (1-LP_factor) * LP_results[1] + LP_factor * results[1]
+    delta_heading = heading_gain * (heading - old_heading)
+    old_heading = heading
 
-    print(str(results[0]) + ", " + str(results[1]) + ", " + str(LP_results[0]) + ", " + str(LP_results[1]))
+    CF_velocity[0] = CF_factor * accelerometer[0] - (1-CF_factor) * (delta_heading) # subtract because accelerometer increases when magnetometer decreases
+    CF_velocity[1] = accelerometer[1]   #Cant do anything about across rip :(
 
-    #if results[1] > Ymax:         #Across
-    #    return "A"
-    #elif results[0] < Xmin:       #Left
-    #    return "L"
-    #elif results[0] > Xmax:      #Right
-    #    return "R"
-    #else:
-    #    return "X"
+    #print(str(accelerometer[0]) + ", " + str(accelerometer[1]) + ", " + str(heading) + ", " + str(CF_velocity[0]) + ", " + str(CF_velocity[1]))
+
+    if CF_velocity[1] > Ymax:         #Across
+        return "A"
+    elif CF_velocity[0] < Xmin:       #Left
+        return "L"
+    elif CF_velocity[0] > Xmax:      #Right
+        return "R"
+    else:
+        return "X"
 
 def main():
-    #waitForSteady()
+    waitForSteady()
     while(1):
         gesture = read()
         
-        #if gesture == "A":         #Across
-        #    print("A")
-        #    waitForSteady()
-        #elif gesture == "L":       #Left
-        #    print("L")
-        #    waitForSteady()
-        #elif gesture == "R":      #Right
-        #    print("R")
-        #    waitForSteady()
+        if gesture == "A":         #Across
+            print("A")
+            waitForSteady()
+        elif gesture == "L":       #Left
+            print("L")
+            waitForSteady()
+        elif gesture == "R":      #Right
+            print("R")
+            waitForSteady()
 
 if __name__ == "__main__":
     main()

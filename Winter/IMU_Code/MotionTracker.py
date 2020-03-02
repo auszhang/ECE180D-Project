@@ -394,8 +394,8 @@ def readIMU(IMU):
     heading = 180 * math.atan2(MAGy,MAGx)/M_PI
 
     #Only have our heading between 0 and 360
-    if heading < 0:
-        heading += 360
+    #if heading < 0:
+    #    heading += 360
 
 
 
@@ -432,8 +432,8 @@ def readIMU(IMU):
     #Calculate tilt compensated heading
     tiltCompensatedHeading = 180 * math.atan2(magYcomp,magXcomp)/M_PI
 
-    if tiltCompensatedHeading < 0:
-                tiltCompensatedHeading += 360
+    #if tiltCompensatedHeading < 0:
+    #            tiltCompensatedHeading += 360
 
     ############################ END ##################################
 
