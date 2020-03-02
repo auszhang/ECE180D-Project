@@ -17,7 +17,7 @@ import LED_ex as LED
 #import IMU code
 sys.path.insert(1, '../IMU_Code')
 from threading import Thread
-import DistRecognition
+import VelocityRecognition
 
 #setup vibration motor
 GPIO.setmode(GPIO.BOARD)
@@ -63,12 +63,8 @@ pixels = Adafruit_WS2801.WS2801Pixels(PIXEL_COUNT, spi=SPI.SpiDev(SPI_PORT, SPI_
 
 lastGesture = "X"
 def listen_IMU():
-	DistRecognition.waitForSteady()
 	while 1:
-		lastGesture = DistRecognition.read()
-		if lastGesture != "X":
-			print(lastGesture)
-			DistRecognition.waitForSteady()
+		lastGesture = VelocityRecognition.read()
 
 # Initialize Gesture Recognition in separate thread
 IMU_thread = Thread(target = listen_IMU)
@@ -153,14 +149,13 @@ while True:
 			GPIO.output(12, 0)
 		if HAVE_POTATO:
 			print("Received potato!")
-			# pass_pos = raw_input("Enter which direction to pass (R, L, or A): ")s
+			# lastGesture = raw_input("Enter which direction to pass (R, L, or A): ")s
 			
 			# LIGHTING SCHEME FOR WITH POTATO
 			LED.have_potato_lights(pixels)
 			# TURN ON VIBRATION MOTOR
 			#GPIO.output(12, 1)
 
-			pass_pos = lastGesture
 			#ADDED TIMER CAPABILITY
 			len_timer = SERVER_TIME
 			num_intervals = 4
@@ -170,20 +165,17 @@ while True:
 					TURN_START_TIME = start_time # Reset timer
 			else:
 					start_time = TURN_START_TIME # Retain timer from last pass
-			while pass_pos=="X" and timesup == False:
+			while lastGesture=="X" and timesup == False:
 					timesup = check_time(len_timer, time.time() - start_time, num_intervals)
 					if timesup:
 							sys.exit()
-					else:
-							pass_pos = lastGesture
-
 			
 			position = ""
-			if pass_pos == "R" or pass_pos == "r":
+			if lastGesture == "R" or lastGesture == "r":
 				position = "RIGHT"
-			elif pass_pos == "L" or pass_pos == "l":
+			elif lastGesture == "L" or lastGesture == "l":
 				position = "LEFT"
-			elif pass_pos == "A" or pass_pos == "a":
+			elif lastGesture == "A" or lastGesture == "a":
 				position = "ACROSS"
 			
 			# Passing payload with client id, keyword, and position to pass to

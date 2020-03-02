@@ -6,12 +6,15 @@ accelerometer = [0, 0]
 heading = 0
 old_heading = 0
 CF_velocity = [0, 0]
-CF_factor = 0.07     #Larger --> More accelerometery, Smaller --> More magnetometery
-heading_gain = 1
+CF_factor = 0.06     #Larger --> More accelerometery, Smaller --> More magnetometery
+LP_factor = 0
+heading_gain = 0.5
 accelerometer_gain = 0.1
 Ymax = 30
 Xmin = -4 
 Xmax = 4
+counter = 0
+is_steady = False
 
 a = datetime.datetime.now()
 
@@ -27,11 +30,14 @@ def waitForSteady():
 
 def read():
     global a
+    global counter
+    global is_steady
     global accelerometer
     global heading
     global old_heading
     global CF_velocity
     global CF_factor
+    global LP_factor
     global heading_gain
     global accelerometer_gain
     global Ymax
@@ -52,33 +58,45 @@ def read():
     old_heading = heading
 
     CF_velocity[0] = CF_factor * accelerometer[0] - (1-CF_factor) * (delta_heading) # subtract because accelerometer increases when magnetometer decreases
-    CF_velocity[1] = accelerometer[1]   #Cant do anything about across rip :(
+    CF_velocity[1] = LP_factor * CF_velocity[1] + (1 - LP_factor) * accelerometer[1]   #Low Pass this bitch into velocity
 
     #print(str(accelerometer[0]) + ", " + str(accelerometer[1]) + ", " + str(heading) + ", " + str(CF_velocity[0]) + ", " + str(CF_velocity[1]))
 
-    if CF_velocity[1] > Ymax:         #Across
+    if CF_velocity[1] > Ymax and is_steady:         #Across
+        counter = 0
+        is_steady = False
         return "A"
-    elif CF_velocity[0] < Xmin:       #Left
-        return "L"
-    elif CF_velocity[0] > Xmax:      #Right
+    elif CF_velocity[0] < Xmin and is_steady:       #Left
+        counter = 0
+        is_steady = False
         return "R"
+    elif CF_velocity[0] > Xmax and is_steady:      #Right
+        counter = 0
+        is_steady = False
+        return "L"
+    elif CF_velocity[0] < 1 and CF_velocity[0] > -1 and CF_velocity[1] < 8 and CF_velocity[1] > -8: #Steady
+        if counter < 10:
+            counter = counter + 1
+            is_steady = False
+        else:
+            is_steady = True
+        return "X"
     else:
         return "X"
 
 def main():
-    waitForSteady()
+    
+    global is_steady
+
     while(1):
         gesture = read()
         
         if gesture == "A":         #Across
             print("A")
-            waitForSteady()
-        elif gesture == "L":       #Left
-            print("L")
-            waitForSteady()
-        elif gesture == "R":      #Right
+        elif gesture == "R":       #Left
             print("R")
-            waitForSteady()
+        elif gesture == "L":      #Right
+            print("L")
 
 if __name__ == "__main__":
     main()
