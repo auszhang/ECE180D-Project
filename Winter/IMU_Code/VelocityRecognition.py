@@ -16,7 +16,7 @@ Xmax = 4
 counter = 0
 is_steady = False
 
-a = datetime.datetime.now()
+#a = datetime.datetime.now()
 
 def waitForSteady():
     counter = 0
@@ -29,7 +29,7 @@ def waitForSteady():
     print("Ready")
 
 def read():
-    global a
+    #global a
     global counter
     global is_steady
     global accelerometer
@@ -44,9 +44,9 @@ def read():
     global Xmin 
     global Xmax 
 
-    b = datetime.datetime.now() - a
-    a = datetime.datetime.now()
-    LP = (b.microseconds/(1000000*1.0))**2
+    #b = datetime.datetime.now() - a
+    #a = datetime.datetime.now()
+    #LP = (b.microseconds/(1000000*1.0))**2
 
     output = MotionTracker.readIMU(MotionTracker.IMU)
 

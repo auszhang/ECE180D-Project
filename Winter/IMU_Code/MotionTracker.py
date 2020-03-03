@@ -240,9 +240,9 @@ def readIMU(IMU):
     ACCx = IMU.readACCx()
     ACCy = IMU.readACCy()
     ACCz = IMU.readACCz()
-    GYRx = IMU.readGYRx()
-    GYRy = IMU.readGYRy()
-    GYRz = IMU.readGYRz()
+    #GYRx = IMU.readGYRx()
+    #GYRy = IMU.readGYRy()
+    #GYRz = IMU.readGYRz()
     MAGx = IMU.readMAGx()
     MAGy = IMU.readMAGy()
     MAGz = IMU.readMAGz()
@@ -348,45 +348,45 @@ def readIMU(IMU):
 
 
     #Convert Gyro raw to degrees per second
-    rate_gyr_x =  GYRx * G_GAIN
-    rate_gyr_y =  GYRy * G_GAIN
-    rate_gyr_z =  GYRz * G_GAIN
+    #rate_gyr_x =  GYRx * G_GAIN
+    #rate_gyr_y =  GYRy * G_GAIN
+    #rate_gyr_z =  GYRz * G_GAIN
 
 
     #Calculate the angles from the gyro. 
-    gyroXangle+=rate_gyr_x*LP
-    gyroYangle+=rate_gyr_y*LP
-    gyroZangle+=rate_gyr_z*LP
+    #gyroXangle+=rate_gyr_x*LP
+    #gyroYangle+=rate_gyr_y*LP
+    #gyroZangle+=rate_gyr_z*LP
 
     #Convert Accelerometer values to degrees
 
-    if not IMU_UPSIDE_DOWN:
-        # If the IMU is up the correct way (Skull logo facing down), use these calculations
-        AccXangle =  (math.atan2(LP_ACCy, LP_ACCz)*RAD_TO_DEG)
-        AccYangle =  (math.atan2(LP_ACCz, LP_ACCx)+M_PI)*RAD_TO_DEG
-    else:
-        #Us these four lines when the IMU is upside down. Skull logo is facing up
-        AccXangle =  (math.atan2(-LP_ACCy,-LP_ACCz)*RAD_TO_DEG)
-        AccYangle =  (math.atan2(-LP_ACCz,-LP_ACCx)+M_PI)*RAD_TO_DEG
+    #if not IMU_UPSIDE_DOWN:
+    #    # If the IMU is up the correct way (Skull logo facing down), use these calculations
+    #    AccXangle =  (math.atan2(LP_ACCy, LP_ACCz)*RAD_TO_DEG)
+    #    AccYangle =  (math.atan2(LP_ACCz, LP_ACCx)+M_PI)*RAD_TO_DEG
+    #else:
+    #    #Us these four lines when the IMU is upside down. Skull logo is facing up
+    #    AccXangle =  (math.atan2(-LP_ACCy,-LP_ACCz)*RAD_TO_DEG)
+    #    AccYangle =  (math.atan2(-LP_ACCz,-LP_ACCx)+M_PI)*RAD_TO_DEG
 
 
 
     #Change the rotation value of the accelerometer to -/+ 180 and
     #move the Y axis '0' point to up.  This makes it easier to read.
-    if AccYangle > 90:
-        AccYangle -= 270.0
-    else:
-        AccYangle += 90.0
+    #if AccYangle > 90:
+    #    AccYangle -= 270.0
+    #else:
+    #    AccYangle += 90.0
 
 
 
     #Complementary filter used to combine the accelerometer and gyro values.
-    CFangleX=AA*(CFangleX+rate_gyr_x*LP) +(1 - AA) * AccXangle
-    CFangleY=AA*(CFangleY+rate_gyr_y*LP) +(1 - AA) * AccYangle
+    #CFangleX=AA*(CFangleX+rate_gyr_x*LP) +(1 - AA) * AccXangle
+    #CFangleY=AA*(CFangleY+rate_gyr_y*LP) +(1 - AA) * AccYangle
 
     #Kalman filter used to combine the accelerometer and gyro values.
-    kalmanY = kalmanFilterY(AccYangle, rate_gyr_y,LP)
-    kalmanX = kalmanFilterX(AccXangle, rate_gyr_x,LP)
+    #kalmanY = kalmanFilterY(AccYangle, rate_gyr_y,LP)
+    #kalmanX = kalmanFilterX(AccXangle, rate_gyr_x,LP)
 
     if IMU_UPSIDE_DOWN:
         MAGy = -MAGy      #If IMU is upside down, this is needed to get correct heading.

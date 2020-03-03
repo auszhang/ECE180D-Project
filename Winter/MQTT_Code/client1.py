@@ -18,6 +18,7 @@ import LED_ex as LED
 sys.path.insert(1, '../IMU_Code')
 from threading import Thread
 import VelocityRecognition
+#import calibrateBerryIMU
 
 #setup vibration motor
 GPIO.setmode(GPIO.BOARD)
