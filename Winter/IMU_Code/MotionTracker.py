@@ -391,7 +391,12 @@ def readIMU(IMU):
     if IMU_UPSIDE_DOWN:
         MAGy = -MAGy      #If IMU is upside down, this is needed to get correct heading.
     #Calculate heading
+    
+    #print(str(MAGy) + ", " + str(MAGx))
+    
     heading = 180 * math.atan2(MAGy,MAGx)/M_PI
+    if heading < 0:
+        heading = heading + 360
 
     #Only have our heading between 0 and 360
     #if heading < 0:
@@ -438,7 +443,7 @@ def readIMU(IMU):
     ############################ END ##################################
 
     #print(str(ACCx) + ", " + str(ACCy) + ", " + str(ACCz) + ", " + str(gyroXangle) + ", " + str(gyroYangle) + ", " + str(gyroZangle) + ", " + str(CFangleX) + ", " + str(CFangleY))
-    outputarray = [BP_ACCx, BP_ACCy, tiltCompensatedHeading]
+    outputarray = [BP_ACCx, BP_ACCy, heading]
 
     #if 1:			#Change to '0' to stop showing the angles from the accelerometer
     #    print ("# ACCX Angle %5.2f \t\t ACCY Angle %5.2f #  " % (AccXangle, AccYangle)),
