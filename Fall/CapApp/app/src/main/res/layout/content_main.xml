@@ -20,13 +20,13 @@
             android:id="@+id/editText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_alignParentTop="true"
             android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:ems="10"
             android:hint="@string/edit_position"
             android:inputType="textPersonName"
-            android:layout_alignParentTop="true"
 
             />
 
@@ -49,9 +49,25 @@
             android:onClick="sendPosition"
             android:text="@string/button_send" />
 
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editText"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="21dp"
+            android:layout_marginLeft="21dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="60dp"
+            android:layout_marginRight="60dp"
+            android:text="Format: [name];[position number] \nExample: Kenny;1" />
+
     </RelativeLayout>
 
-<!--    &lt;!&ndash;Below is the transparent layout positioned at startup &ndash;&gt;-->
+    <!--    &lt;!&ndash;Below is the transparent layout positioned at startup &ndash;&gt;-->
 <!--    <RelativeLayout-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="match_parent"-->
