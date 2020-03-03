@@ -28,7 +28,7 @@ GPIO.setup(12, GPIO.OUT)
 base_dir = '/sys/bus/w1/devices/'
 
 if not USE_CMD_LINE:
-	from bluetooth import * #FOR BLUETOOTH
+	#from bluetooth import * #FOR BLUETOOTH
 	server_sock=BluetoothSocket( RFCOMM )
 	server_sock.bind(("",PORT_ANY))
 	server_sock.listen(1)
@@ -67,6 +67,7 @@ pixels = Adafruit_WS2801.WS2801Pixels(PIXEL_COUNT, spi=SPI.SpiDev(SPI_PORT, SPI_
 
 lastGesture = "X"
 def listen_IMU():
+	global lastGesture
 	while 1:
 		lastGesture = VelocityRecognition.read()
 
@@ -112,7 +113,7 @@ def check_time(timer_length, time_elapsed, num):
 								else:
     									LED.timer_interval_lights(pixels)
 				LED.have_potato_lights(pixels) #reset after interval flash!
-				#GPIO.output(12, 1)
+				GPIO.output(12, 1)
 
 				return False
 		else:
@@ -122,6 +123,7 @@ def check_time(timer_length, time_elapsed, num):
 				return True	
 
 while True:
+	#global lastGesture
 	if not USE_CMD_LINE:
 			print("Waiting for connection on RFCOMM channel %d")% port
 			client_sock, client_info = server_sock.accept()
@@ -182,7 +184,7 @@ while True:
 				# LIGHTING SCHEME FOR WITH POTATO
 				LED.have_potato_lights(pixels)
 				# TURN ON VIBRATION MOTOR
-				#GPIO.output(12, 1)
+				GPIO.output(12, 1)
 
 				#ADDED TIMER CAPABILITY
 				len_timer = SERVER_TIME
