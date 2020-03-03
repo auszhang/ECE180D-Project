@@ -106,6 +106,7 @@ def parse_pass(statement, game_grid, potato_row, potato_col):
     data = parse_from_string(statement)
     client_id = data[0]
     direction = data[2]
+    print(direction)
     c_row, c_col = find_client_in_grid(client_id, game_grid)
     
     # Invalid if client is not in the game

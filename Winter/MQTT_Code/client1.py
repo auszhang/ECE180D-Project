@@ -28,7 +28,7 @@ GPIO.setup(12, GPIO.OUT)
 base_dir = '/sys/bus/w1/devices/'
 
 if not USE_CMD_LINE:
-	#from bluetooth import * #FOR BLUETOOTH
+	from bluetooth import * #FOR BLUETOOTH
 	server_sock=BluetoothSocket( RFCOMM )
 	server_sock.bind(("",PORT_ANY))
 	server_sock.listen(1)
@@ -129,18 +129,11 @@ while True:
 			client_sock, client_info = server_sock.accept()
 			print("Accepted BT connection from ", client_info)
 	try:
-			if not USE_CMD_LINE:
-				data = client_sock.recv(1024)
-				if len(data) == 0: #no data received from BT
-					break
-				print("received [%s]") % data
-				data_array = data.split(";")
-				if len(data_array) == 2:
-					# Parse client data from Bluetooth data.
-					my_name = data_array[0]
-					my_pos = data_array[1]
 			send_data =  ";"
 			if not INITIALIZED:
+    			my_name = ""
+				MY_ID = ""
+				my_pos = ""
 				if USE_CMD_LINE:
 					# Get user data from commandline
 					my_name = raw_input("Enter your name: ")
