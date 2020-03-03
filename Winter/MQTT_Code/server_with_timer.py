@@ -24,7 +24,7 @@ failed_pass = False
 fail_msg = ""
 game_start = False
 client_to_notify = ""
-MAX_TIME = 20 # Max timer duration
+MAX_TIME = 30 # Max timer duration
 MIN_TIME = 2 # Min timer duration
 curr_time = MAX_TIME # Current timer duration
 
