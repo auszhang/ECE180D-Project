@@ -75,6 +75,21 @@ def eliminated_lights(pixels):
         pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(0,0,0))
     pixels.show()
 
+def show_and_wait(c):
+        for j in range(PIXEL_COUNT):
+            pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(c[0]*MAX_INTENSITY/255,c[1]*MAX_INTENSITY/255,c[2]*MAX_INTENSITY/255))
+            pixels.show()
+            time.sleep(0.1)
+
+def winning_sequence(pixels):
+    pixels.clear()
+    while True:
+        show_and_wait( [124, 252, 0] ) #bright green
+        show_and_wait( [0, 120, 0]  ) #dark green
+        show_and_wait( [51, 204, 10] ) #lime green
+        show_and_wait([25, 89, 5] ) #Lincoln green
+        show_and_wait( [76, 186, 10] ) #Kelly green
+
 def timer_interval_lights(pixels):
     color = [46, 139, 87] #seagreen
     r1=color[0] * MAX_INTENSITY/255;

@@ -177,6 +177,7 @@ while True:
 			if WINNER:
 				print("Congratulations, you win!")
 				# TODO: Display winning light sequence.
+				LED.winning_sequence(pixels)
 			elif HAVE_POTATO:
 				print("Received potato!")
 				# lastGesture = raw_input("Enter which direction to pass (R, L, or A): ")s
