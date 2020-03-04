@@ -27,6 +27,7 @@ client_to_notify = ""
 MAX_TIME = 30 # Max timer duration
 MIN_TIME = 2 # Min timer duration
 curr_time = MAX_TIME # Current timer duration
+WON_GAME = False
 
 # Variables for speech recognition
 model_path = get_model_path()
@@ -65,6 +66,7 @@ def on_message(client, userdata, msg):
     global prev_row
     global prev_col
     global curr_intervals
+    global WON_GAME
     if "DIED" in statement:
         dead_client = statement[:-4]
         if dead_client in rec_client_strings:
@@ -76,6 +78,9 @@ def on_message(client, userdata, msg):
                 prev_row = -1
                 prev_col = -1
                 curr_intervals = MAX_TIME
+            if MIN_CLIENTS!=1 and len(rec_client_strings)==1:
+                WON_GAME = True
+                
     elif "PASS_POTATO" in statement:
         new_row, new_col, valid = parse_pass(statement, game_grid, potato_row, potato_col)
         data = parse_from_string(statement)
@@ -134,6 +139,8 @@ while True:
         pass_msg = fail_msg
     elif potato_row != prev_row or potato_col != prev_col:
         pass_msg = str(game_grid[potato_row][potato_col]) + ";RECEIVE;" + str(curr_time)
+        if WON_GAME:
+            pass_msg = pass_msg + ";WON_GAME"
         if curr_time > MIN_TIME:
             curr_time -= 1
         prev_row = potato_row

@@ -52,6 +52,7 @@ HAVE_POTATO = False
 SERVER_TIME = 0
 TURN_START_TIME = 0
 FAILED = False
+WINNER = False
 
 
 # Configure the count of pixels:
@@ -89,12 +90,15 @@ def on_message(client, userdata, msg):
 		#print(statement.split(";"))
 		global HAVE_POTATO
 		global SERVER_TIME
-		global FAILED      
+		global FAILED
+		global WINNER
 		if "RECEIVE" or "FAILED_TO_PASS" in statement:
 				data = statement.split(";")
 				if MY_ID == str(data[0]):
 						#print("RECOGNIZED MY ID")
 						HAVE_POTATO  = True
+						if "WON_GAME" in statement:
+								WINNER = True
 						if "RECEIVE" in statement:
 								FAILED = False                 
 								SERVER_TIME = int(data[2]) # Update max timer duration
@@ -170,7 +174,10 @@ while True:
 				# LIGHTING SCHEME FOR NO POTATO
 				LED.no_potato_lights(pixels)
 				GPIO.output(12, 0)
-			if HAVE_POTATO:
+			if WINNER:
+				print("Congratulations, you win!")
+				# TODO: Display winning light sequence.
+			elif HAVE_POTATO:
 				print("Received potato!")
 				# lastGesture = raw_input("Enter which direction to pass (R, L, or A): ")s
 				
