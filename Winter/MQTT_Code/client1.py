@@ -115,7 +115,7 @@ def check_time(timer_length, time_elapsed, num):
 										print("Final or 2nd to last warning!")
 										LED.final_warning_lights(pixels)
 								else:
-    									LED.timer_interval_lights(pixels)
+										LED.timer_interval_lights(pixels)
 				LED.have_potato_lights(pixels) #reset after interval flash!
 				GPIO.output(12, 1)
 
@@ -135,7 +135,7 @@ while True:
 	try:
 			send_data =  ";"
 			if not INITIALIZED:
-    			my_name = ""
+				my_name = ""
 				MY_ID = ""
 				my_pos = ""
 				if USE_CMD_LINE:
@@ -174,6 +174,10 @@ while True:
 				# LIGHTING SCHEME FOR NO POTATO
 				LED.no_potato_lights(pixels)
 				GPIO.output(12, 0)
+			if not FAILED and not HAVE_POTATO:
+					LED.no_potato_lights(pixels)
+					# TURN VIBRATION MOTOR OFF
+					GPIO.output(12, 0)
 			if WINNER:
 				print("Congratulations, you win!")
 				# TODO: Display winning light sequence.
@@ -213,11 +217,6 @@ while True:
 				send_data = send_data.join([MY_ID,"PASS_POTATO",position])
 				publish.single(send_path, send_data, hostname = MQTT_SERVER)
 				print("Passing potato or time is up!")
-				if not timesup:
-					# LIGHTING SCHEME FOR NO POTATO
-					LED.no_potato_lights(pixels)
-					# TURN VIBRATION MOTOR OFF
-					GPIO.output(12, 0)
 				HAVE_POTATO = False
 
 	except IOError:
