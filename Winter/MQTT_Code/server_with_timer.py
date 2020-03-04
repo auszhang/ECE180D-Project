@@ -81,8 +81,8 @@ def on_message(client, userdata, msg):
         data = parse_from_string(statement)
         direction = data[2]
         speech_valid = True
-        #if direction != last_phrase.upper():
-            #speech_valid = False
+        # if direction != last_phrase.upper():
+        #     speech_valid = False
         if valid and speech_valid:
             print("valid")
             failed_pass = False
