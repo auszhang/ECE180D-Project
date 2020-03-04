@@ -92,6 +92,8 @@ def on_message(client, userdata, msg):
 		global SERVER_TIME
 		global FAILED
 		global WINNER
+		if "RECEIVE" in statement:
+				FAILED = False            
 		if "RECEIVE" or "FAILED_TO_PASS" in statement:
 				data = statement.split(";")
 				if MY_ID == str(data[0]):
@@ -99,8 +101,7 @@ def on_message(client, userdata, msg):
 						HAVE_POTATO  = True
 						if "WON_GAME" in statement:
 								WINNER = True
-						if "RECEIVE" in statement:
-								FAILED = False                 
+						if "RECEIVE" in statement:               
 								SERVER_TIME = int(data[2]) # Update max timer duration
 						if "FAILED_TO_PASS" in statement:
 								FAILED = True   
