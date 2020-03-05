@@ -60,7 +60,7 @@ def read():
     CF_velocity[0] = CF_factor * accelerometer[0] - (1-CF_factor) * (delta_heading) # subtract because accelerometer increases when magnetometer decreases
     CF_velocity[1] = LP_factor * CF_velocity[1] + (1 - LP_factor) * accelerometer[1]   #Low Pass this bitch into velocity
 
-    #print(str(accelerometer[0]) + ", " + str(accelerometer[1]) + ", " + str(heading) + ", " + str(CF_velocity[0]) + ", " + str(CF_velocity[1]))
+    #print(str(heading))
 
     if CF_velocity[1] > Ymax and is_steady:         #Across
         counter = 0
