@@ -14,23 +14,15 @@ Ymax = 30
 Xmin = -4 
 Xmax = 4
 counter = 0
+counter_cap = 30
 is_steady = False
 
 #a = datetime.datetime.now()
 
-def waitForSteady():
-    counter = 0
-    while counter < 10:
-        read()
-        if CF_velocity[0] < 1 and CF_velocity[0] > -1 and CF_velocity[1] < 8 and CF_velocity[1] > -8:
-            counter = counter + 1
-        else:
-            counter = 0
-    print("Ready")
-
 def read():
     #global a
     global counter
+    global counter_cap
     global is_steady
     global accelerometer
     global heading
@@ -75,7 +67,7 @@ def read():
         is_steady = False
         return "L"
     elif CF_velocity[0] < 1 and CF_velocity[0] > -1 and CF_velocity[1] < 8 and CF_velocity[1] > -8: #Steady
-        if counter < 10:
+        if counter < counter_cap:
             counter = counter + 1
             is_steady = False
         else:

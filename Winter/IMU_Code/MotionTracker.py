@@ -72,6 +72,9 @@ BP_ACCy = 0
 BP_ACCz = 0
 a = datetime.datetime.now()
 
+flipper = [0, 0]
+shifter = 0
+
 #Setup the tables for the median filter. Fill them all with '1' so we dont get devide by zero error 
 acc_medianTable1X = [1] * ACC_MEDIANTABLESIZE
 acc_medianTable1Y = [1] * ACC_MEDIANTABLESIZE
@@ -223,6 +226,9 @@ def readIMU(IMU):
     global BP_ACCz
     global a
 
+    global flipper
+    global shifter
+
     global acc_medianTable1X
     global acc_medianTable1Y
     global acc_medianTable1Z
@@ -240,9 +246,6 @@ def readIMU(IMU):
     ACCx = IMU.readACCx()
     ACCy = IMU.readACCy()
     ACCz = IMU.readACCz()
-    #GYRx = IMU.readGYRx()
-    #GYRy = IMU.readGYRy()
-    #GYRz = IMU.readGYRz()
     MAGx = IMU.readMAGx()
     MAGy = IMU.readMAGy()
     MAGz = IMU.readMAGz()
@@ -352,41 +355,52 @@ def readIMU(IMU):
     #print(str(MAGy) + ", " + str(MAGx))
     
     heading = 180 * math.atan2(MAGy,MAGx)/M_PI
-    if heading < 0:
-        heading = heading + 360
 
-    ####################################################################
-    ###################Tilt compensated heading#########################
-    ####################################################################
-    #Normalize accelerometer raw values.
-    if not IMU_UPSIDE_DOWN:        
-        #Use these two lines when the IMU is up the right way. Skull logo is facing down
-        accXnorm = LP_ACCx/math.sqrt(LP_ACCx * LP_ACCx + LP_ACCy * LP_ACCy + LP_ACCz * LP_ACCz)
-        accYnorm = LP_ACCy/math.sqrt(LP_ACCx * LP_ACCx + LP_ACCy * LP_ACCy + LP_ACCz * LP_ACCz)
-    else:
-        #Us these four lines when the IMU is upside down. Skull logo is facing up
-        accXnorm = -LP_ACCx/math.sqrt(LP_ACCx * LP_ACCx + LP_ACCy * LP_ACCy + LP_ACCz * LP_ACCz)
-        accYnorm = LP_ACCy/math.sqrt(LP_ACCx * LP_ACCx + LP_ACCy * LP_ACCy + LP_ACCz * LP_ACCz)
+    flipper[0] = flipper[1]
+    flipper[1] = heading
 
-    #Calculate pitch and roll
+    if flipper[0] > 90 and flipper[1] < -90:
+        shifter += 360
+    elif flipper[0] < -90 and flipper[1] > 90:
+        shifter -= 360 
 
-    pitch = math.asin(accXnorm)
-    roll = -math.asin(accYnorm/math.cos(pitch))
+    flipped_heading = heading + shifter
 
+    #if heading < 0:
+    #    heading = heading + 360
 
-    #Calculate the new tilt compensated values
-    magXcomp = MAGx*math.cos(pitch)+MAGz*math.sin(pitch)
-
-    #The compass and accelerometer are orientated differently on the LSM9DS0 and LSM9DS1 and the Z axis on the compass
-    #is also reversed. This needs to be taken into consideration when performing the calculations
-    if(IMU.LSM9DS0):
-        magYcomp = MAGx*math.sin(roll)*math.sin(pitch)+MAGy*math.cos(roll)-MAGz*math.sin(roll)*math.cos(pitch)   #LSM9DS0
-    else:
-        magYcomp = MAGx*math.sin(roll)*math.sin(pitch)+MAGy*math.cos(roll)+MAGz*math.sin(roll)*math.cos(pitch)   #LSM9DS1
-
-
-    #Calculate tilt compensated heading
-    tiltCompensatedHeading = 180 * math.atan2(magYcomp,magXcomp)/M_PI
+#    ####################################################################
+#    ###################Tilt compensated heading#########################
+#    ####################################################################
+#    #Normalize accelerometer raw values.
+#    if not IMU_UPSIDE_DOWN:        
+#        #Use these two lines when the IMU is up the right way. Skull logo is facing down
+#        accXnorm = LP_ACCx/math.sqrt(LP_ACCx * LP_ACCx + LP_ACCy * LP_ACCy + LP_ACCz * LP_ACCz)
+#        accYnorm = LP_ACCy/math.sqrt(LP_ACCx * LP_ACCx + LP_ACCy * LP_ACCy + LP_ACCz * LP_ACCz)
+#    else:
+#        #Us these four lines when the IMU is upside down. Skull logo is facing up
+#        accXnorm = -LP_ACCx/math.sqrt(LP_ACCx * LP_ACCx + LP_ACCy * LP_ACCy + LP_ACCz * LP_ACCz)
+#        accYnorm = LP_ACCy/math.sqrt(LP_ACCx * LP_ACCx + LP_ACCy * LP_ACCy + LP_ACCz * LP_ACCz)
+#
+#    #Calculate pitch and roll
+#
+#    pitch = math.asin(accXnorm)
+#    roll = -math.asin(accYnorm/math.cos(pitch))
+#
+#
+#    #Calculate the new tilt compensated values
+#    magXcomp = MAGx*math.cos(pitch)+MAGz*math.sin(pitch)
+#
+#    #The compass and accelerometer are orientated differently on the LSM9DS0 and LSM9DS1 and the Z axis on the compass
+#    #is also reversed. This needs to be taken into consideration when performing the calculations
+#    if(IMU.LSM9DS0):
+#        magYcomp = MAGx*math.sin(roll)*math.sin(pitch)+MAGy*math.cos(roll)-MAGz*math.sin(roll)*math.cos(pitch)   #LSM9DS0
+#    else:
+#        magYcomp = MAGx*math.sin(roll)*math.sin(pitch)+MAGy*math.cos(roll)+MAGz*math.sin(roll)*math.cos(pitch)   #LSM9DS1
+#
+#
+#    #Calculate tilt compensated heading
+#    tiltCompensatedHeading = 180 * math.atan2(magYcomp,magXcomp)/M_PI
 
     #if tiltCompensatedHeading < 0:
     #            tiltCompensatedHeading += 360
@@ -394,7 +408,7 @@ def readIMU(IMU):
     ############################ END ##################################
 
     #print(str(ACCx) + ", " + str(ACCy) + ", " + str(ACCz) + ", " + str(gyroXangle) + ", " + str(gyroYangle) + ", " + str(gyroZangle) + ", " + str(CFangleX) + ", " + str(CFangleY))
-    outputarray = [BP_ACCx, BP_ACCy, tiltCompensatedHeading]
+    outputarray = [BP_ACCx, BP_ACCy, flipped_heading]
 
     #if 1:			#Change to '0' to stop showing the angles from the accelerometer
     #    print ("# ACCX Angle %5.2f \t\t ACCY Angle %5.2f #  " % (AccXangle, AccYangle)),
