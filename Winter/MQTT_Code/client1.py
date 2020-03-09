@@ -67,10 +67,23 @@ pixels = Adafruit_WS2801.WS2801Pixels(PIXEL_COUNT, spi=SPI.SpiDev(SPI_PORT, SPI_
 # HAVE_POTATO_STRING = ""
 
 lastGesture = "X"
+stickyGesture = "X"
+
+
 def listen_IMU():
 	global lastGesture
+	global stickyGesture
+	time_limit = 1
+	start_time = time.time()
 	while 1:
 		lastGesture = VelocityRecognition.read()
+		if lastGesture != "X":
+    		stickyGesture = lastGesture
+			start_time = time.time()
+		time_elapsed = time.time() - start_time
+		if time_elapsed > time_limit:
+    			stickyGesture = "X"
+
 
 # Initialize Gesture Recognition in separate thread
 IMU_thread = Thread(target = listen_IMU)
@@ -93,7 +106,7 @@ def on_message(client, userdata, msg):
 		global FAILED
 		global WINNER
 		if "RECEIVE" in statement:
-				FAILED = False            
+    				FAILED = False            
 		if "RECEIVE" or "FAILED_TO_PASS" in statement:
 				data = statement.split(";")
 				if MY_ID == str(data[0]):
@@ -129,7 +142,7 @@ def check_time(timer_length, time_elapsed, num):
 
 while True:
 	#global lastGesture
-	if not USE_CMD_LINE:
+	if not INITIALIZED and not USE_CMD_LINE:
 			print("Waiting for connection on RFCOMM channel %d")% port
 			client_sock, client_info = server_sock.accept()
 			print("Accepted BT connection from ", client_info)
@@ -201,17 +214,17 @@ while True:
 						TURN_START_TIME = start_time # Reset timer
 				else:
 						start_time = TURN_START_TIME # Retain timer from last pass
-				while lastGesture=="X" and timesup == False:
+				while stickyGesture=="X" and timesup == False:
 						timesup = check_time(len_timer, time.time() - start_time, num_intervals)
 						if timesup:
 								sys.exit()
 				
 				position = ""
-				if lastGesture == "R" or lastGesture == "r":
+				if stickyGesture == "R" or stickyGesture == "r":
 					position = "RIGHT"
-				elif lastGesture == "L" or lastGesture == "l":
+				elif stickyGesture == "L" or stickyGesture == "l":
 					position = "LEFT"
-				elif lastGesture == "A" or lastGesture == "a":
+				elif stickyGesture == "A" or stickyGesture == "a":
 					position = "ACROSS"
 				
 				# Passing payload with client id, keyword, and position to pass to
