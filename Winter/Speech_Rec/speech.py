@@ -17,7 +17,6 @@ speech = LiveSpeech(
 
 count = 0
 for phrase in speech:
-    print(type(str(phrase)))
     print(str(phrase))
     
 
